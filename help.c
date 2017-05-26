@@ -26,7 +26,14 @@ void addFirst(NODE *target, int st, int e) // target층에 저장
 	newNode->next = target->next;
 	newNode->start = st;
 	newNode->end = e;
-	target->next = newNode;
+}
+
+void removeFirst(NODE *target)    // 기준 노드의 다음 노드를 삭제하는 함수
+{
+    NODE *removeNode = target->next;    // 기준 노드의 다음 노드 주소를 저장
+    target->next = removeNode->next;     // 기준 노드의 다음 노드에 삭제할 노드의 다음 노드를 지정
+
+    free(removeNode);    // 노드 메모리 해제
 }
 
 void print_list(NODE target)
@@ -43,6 +50,7 @@ void print_list(NODE target)
 	printf(")\n");
 
 }
+
 
 
 
