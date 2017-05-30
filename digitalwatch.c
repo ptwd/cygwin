@@ -50,12 +50,12 @@ char ampm[10] = "AM";
 struct tm tm;
 
 long diff = 0;
-int b = 0; //bπˆ∆∞ ≈¨∏Ø
-int c1 = 1; //cπˆ∆∞ ≈¨∏Ø
+int b = 0; //bÎ≤ÑÌäº ÌÅ¥Î¶≠
+int c1 = 1; //cÎ≤ÑÌäº ÌÅ¥Î¶≠
 int c2 = 1;
 int d = 0;
 int state = 0;
-int bbbbb = 0; // æÀ∂˜Ω√∞£¿”¿ª æÀ∏≤
+int bbbbb = 0; // ÏïåÎûåÏãúÍ∞ÑÏûÑÏùÑ ÏïåÎ¶º
 int alarmon = 0;
 int plzstop = 0;
 
@@ -66,7 +66,7 @@ int main(void) {
 
 	int command = 0;
 	pthread_create(&thread0, NULL, &cal_clock, NULL);
-	pthread_create(&thread1, NULL, &print_clock, NULL);  // Ω√¿€»≠∏È
+	pthread_create(&thread1, NULL, &print_clock, NULL);  // ÏãúÏûëÌôîÎ©¥
 
 
 	while (command != 101)
@@ -143,7 +143,7 @@ int main(void) {
 		default:
 			break;
 		}
-	} // whileπÆ ≥°
+	} // whileÎ¨∏ ÎÅù
 	if (alarmon == 1)
 	{
 		plzstop = 1;
@@ -158,7 +158,7 @@ int main(void) {
 		int a = pthread_join(thread1, NULL);
 		int b = pthread_join(thread0, NULL);
 		if (!a && !b)
-			printf("\n¡§ªÛ¿˚¿∏∑Œ ¡æ∑·µ«æ˙Ω¿¥œ¥Ÿ");
+			printf("\nÏ†ïÏÉÅÏ†ÅÏúºÎ°ú Ï¢ÖÎ£åÎêòÏóàÏäµÎãàÎã§");
 	}
 	else {
 		pthread_cancel(thread2);
@@ -168,7 +168,7 @@ int main(void) {
 		int b = pthread_join(thread1, NULL);
 		int c = pthread_join(thread0, NULL);
 		if (!a && !b && !c)
-			printf("\n¡§ªÛ¿˚¿∏∑Œ ¡æ∑·µ«æ˙Ω¿¥œ¥Ÿ");
+			printf("\nÏ†ïÏÉÅÏ†ÅÏúºÎ°ú Ï¢ÖÎ£åÎêòÏóàÏäµÎãàÎã§");
 	}
 	return 0;
 }
@@ -179,11 +179,11 @@ void* cal_clock(void *arg) {
 	time_t print_t;
 
 
-	// Ω«¡¶ Ω√∞£∞˙ ≥ª∞° ¡§«— Ω√∞£ªÁ¿Ã¿« ¬˜¿Ã∏¶ ±∏«œ∞Ì
+	// Ïã§Ï†ú ÏãúÍ∞ÑÍ≥º ÎÇ¥Í∞Ä Ï†ïÌïú ÏãúÍ∞ÑÏÇ¨Ïù¥Ïùò Ï∞®Ïù¥Î•º Íµ¨ÌïòÍ≥†
 
 	while (1)
 	{
-		print_t = time(NULL) - diff; // Ω«¡¶ Ω√∞£∞˙ ±◊ ¬˜¿Ã∏¶ ¿Ø¡ˆ«œ¥¬ Ω√∞Ë∏¶ ∏∏µÎ
+		print_t = time(NULL) - diff; // Ïã§Ï†ú ÏãúÍ∞ÑÍ≥º Í∑∏ Ï∞®Ïù¥Î•º Ïú†ÏßÄÌïòÎäî ÏãúÍ≥ÑÎ•º ÎßåÎì¨
 		tm = *localtime(&print_t);
 
 		printhour = tm.tm_hour;
@@ -213,7 +213,7 @@ void* print_clock(void *arg) {
 
 		printf("%s %02d:%02d:%02d %s", ampm, printhour, tm.tm_min, tm.tm_sec, wday_name[tm.tm_wday]);
 		fflush(stdout);
-		Sleep(50);
+		Sleep(100);
 	}
 }
 
@@ -294,7 +294,7 @@ void* set_time(void *arg) {
 
 
 
-		//√‚∑¬∫Œ∫–----------------------------------------------
+		//Ï∂úÎ†•Î∂ÄÎ∂Ñ----------------------------------------------
 		system("Clear");
 		gotoxy(10, 10);
 
@@ -342,14 +342,14 @@ void* set_time(void *arg) {
 		printf(" %s", wday_name[settm.tm_wday]);
 		fflush(stdout);
 
-		//sleep¿¸ø£ fflush(stdout)
-		Sleep(50);
+		//sleepÏ†ÑÏóî fflush(stdout)
+		Sleep(100);
 	}
 }
 
 void *set_alarm(void *arg) {
 	pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
-	pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED, NULL); // √Îº“¡ˆ¡° ¡∏¿Á
+	pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED, NULL); // Ï∑®ÏÜåÏßÄÏ†ê Ï°¥Ïû¨
 
 	struct tm alarmtm = *localtime(&alarmtime);
 	int printhour2;
@@ -394,9 +394,9 @@ void *set_alarm(void *arg) {
 			b = 0;
 		}
 
-		alarmtm.tm_sec = 0; //æÀ∂˜ øÔ∏Æ¥¬ Ω√∞¢¿ª 0√ ∑Œ º≥¡§
+		alarmtm.tm_sec = 0; //ÏïåÎûå Ïö∏Î¶¨Îäî ÏãúÍ∞ÅÏùÑ 0Ï¥àÎ°ú ÏÑ§Ï†ï
 
-		alarmtime = mktime(&alarmtm); // ∫Ø∞Êµ»alarmtm ¿« Ω√∞£¿ª time_t«¸¿Œ alarmtime¿∏∑Œ
+		alarmtime = mktime(&alarmtm); // Î≥ÄÍ≤ΩÎêúalarmtm Ïùò ÏãúÍ∞ÑÏùÑ time_tÌòïÏù∏ alarmtimeÏúºÎ°ú
 
 		printhour2 = alarmtm.tm_hour;
 
@@ -419,7 +419,7 @@ void *set_alarm(void *arg) {
 		strcpy(alin.amorpm, ampm2);
 		alin.whour = printhour2;
 		alin.wmin = alarmtm.tm_min;
-		pthread_cleanup_push(clean_up, (void *)&alin); //√Îº“¡ˆ¡°
+		pthread_cleanup_push(clean_up, (void *)&alin); //Ï∑®ÏÜåÏßÄÏ†ê
 
 
 
@@ -431,7 +431,7 @@ void *set_alarm(void *arg) {
 
 
 
-		//√‚∑¬∫Œ∫–----------------------------------------------
+		//Ï∂úÎ†•Î∂ÄÎ∂Ñ----------------------------------------------
 		system("Clear");
 
 
@@ -439,14 +439,14 @@ void *set_alarm(void *arg) {
 			if (alarmon == 1 ) {
 				printf("\033[s");
 				gotoxy(10, 9);
-				printf("æÀ∂˜¿Ã º≥¡§µ«æ˙Ω¿¥œ¥Ÿ.");
+				printf("ÏïåÎûåÏù¥ ÏÑ§Ï†ïÎêòÏóàÏäµÎãàÎã§.");
 				printf("\033[u");
 
 			}
 			else {
 				printf("\033[s");
 				gotoxy(10, 9);
-				printf("æÀ∂˜¿Ã «ÿ¡¶µ«æ˙Ω¿¥œ¥Ÿ.");
+				printf("ÏïåÎûåÏù¥ Ìï¥Ï†úÎêòÏóàÏäµÎãàÎã§.");
 				printf("\033[u");
 
 			}
@@ -472,8 +472,8 @@ void *set_alarm(void *arg) {
 		fflush(stdout);
 
 
-		//sleep¿¸ø£ fflush(stdout)
-		Sleep(50);
+		//sleepÏ†ÑÏóî fflush(stdout)
+		Sleep(100);
 		pthread_cleanup_pop(0);
 	}
 }
@@ -485,7 +485,7 @@ void clean_up(void *arg)
 
 	printf("AL %s %s %02d:%02d", ((struct alinfo*)arg)->Alnf, ((struct alinfo*)arg)->amorpm, ((struct alinfo*)arg)->whour, ((struct alinfo*)arg)->wmin);
 	fflush(stdout);
-	Sleep(2000); // 2√ 
+	Sleep(2000); // 2Ï¥à
 }
 
 void *alarm(void *arg)
@@ -549,4 +549,6 @@ int getch(void) {
 	tcsetattr(0, TCSAFLUSH, &save);
 	return ch;
 }
+
+
 

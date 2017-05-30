@@ -1,225 +1,4 @@
 ./a
-./a
-./a
-./a
-gcc ajfl.c
-gcc ajfl.c
-./a
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-gcc ajfl.c
-./a
-gcc ajfl.c
-gcc ajfl.c
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-a
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-./a
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-gcc ajfl.c
-gcc ajfl.c
-gcc ajfl.c
-gcc ajfl.c
-gcc ajfl.c
-gcc ajfl.c
-./a
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-gcc ajfl.c
-./a
-./a
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-./a
-gcc ajfl.c
-gcc ajfl.c
-./a
-./a
-gcc ajfl.c
-./a
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-./a
-gcc ajfl.c
-./a
-./a
-gcc ajfl.c
-./a
-./a
-gcc ajfl.c
-gcc ajfl.c
-gcc ajfl.c
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-gcc ajfl.c
-gcc ajfl.c
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-e
-e
-gcc ajfl.c
-./a
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-gcc ajfl.c
-./a
-./a
-gcc ajfl.c
-./a
 gcc ajfl.c
 ./a
 gcc ajfl.c
@@ -497,4 +276,225 @@ gcc we.c
 ./a
 vi help.c
 gcc help.c
+./a
+vi 16_4.c
+gcc 16_4.c
+./a
+gcc 16_4.c
+gcc 16_4.c
+./a
+./a
+gcc 16_4.c
+./a
+gcc 16_4.c
+gcc 16_4.c
+gcc 16_4.c
+gcc 16_4.c
+./a
+gcc 16_4.c
+gcc 16_4.c
+./a
+gcc 16_4.c
+./a
+gcc 16_4.c
+./a
+gcc 16_4.c
+./a
+./a
+gcc 16_4.c
+./a
+gcc 16_4.c
+./a
+gcc 16_4.c
+./a
+./a
+gcc 16_4.c
+./a
+gcc 16_4.c
+./a
+gcc 16_4.c
+./a
+./a
+gcc 16_4.c
+./a
+./a
+./a
+./a
+./a
+./a
+./a
+./a
+./a
+./a
+./a
+gcc 16_4.c
+./a
+gcc 16_4.c
+./a
+gcc 16_4.c
+./a
+gcc 16_4.c
+./a
+gcc 16_4.c
+./a
+gcc 16_4.c
+./a
+gcc 16_4.c
+./a
+gcc 16_4.c
+./a
+gcc 16_4.c
+gcc 16_4.c
+./a
+./a
+gcc 16_4.c
+./a
+gcc 16_4.c
+gcc 16_4.c
+gcc 16_4.c
+./a
+gcc 16_4.c
+./a
+gcc 16_4.c
+./a
+gcc 16_4.c
+./a
+gcc 16_4.c
+./a
+gcc 16_4.c
+gcc 16_4.c
+./a
+./a
+gcc 16_4.c
+gcc 16_4.c
+./a
+./a
+./a
+./a
+gcc 16_4.c
+./a
+./a
+./a
+./a
+./a
+gcc 16_4.c
+./a
+3
+./a
+./a
+gcc 16_4.c
+./a
+gcc 16_4.c
+./a
+gcc 16_4.c
+./a
+gcc 16_4.c
+./a
+gcc 16_4.c
+./a
+gcc 16_4.c
+gcc 16_4.c
+./a
+gcc 16_4.c
+./a
+gcc 16_4.c
+gcc 16_4.c
+gcc 16_4.c
+gcc 16_4.c
+gcc 16_4.c
+gcc 16_4.c
+./a
+gcc qgqg.c
+gcc qgqg.c
+./a
+gcc qgqg.c
+./a
+gcc help.c
+gcc help.c
+gcc help.c
+gcc help.c
+gcc help.c
+gcc help.c
+./a
+gcc help.c
+./a
+gcc e.c
+gcc help.c
+gcc help.c
+./a
+./a
+gcc help.c
+gcc help.c
+./a
+gcc help.c
+./a
+gcc help.c
+./a
+gcc e.c
+./a
+gcc e.c
+gcc e.c
+./a
+gcc e.c
+./a
+gcc e.c
+./a
+gcc e.c
+./a
+gcc e.c
+gcc e.c
+./a
+gcc e.c
+gcc e.c
+./a
+./a
+gcc e.c
+gcc e.c
+./a
+gcc e.c
+gcc e.c
+./a
+gcc e.c
+./a
+gcc e.c
+gcc e.c
+./a
+gcc e.c
+./a
+gcc e.c
+./a
+gcc e.c
+./a
+gcc e.c
+./a
+./a
+./a
+./a
+gcc help_a.c
+./a
+vi zzz.c
+gcc zzz.c
+gcc zzz.c
+./a
+gcc zzz.c
+./a
+gcc zzz.c
+./a
+gcc zzz.c
+./a
+gcc zzz.c
+./a
+gcc zzz.c
+./a
+gcc zzz.c
+./a
+gcc zzz.c
+./a
+gcc zzz.c
+./a
+gcc e.c
+./a
+gcc e.c
+./a
+gcc zzz.c
 ./a

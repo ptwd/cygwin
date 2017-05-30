@@ -7,18 +7,16 @@
 pthread_t making;
 pthread_t printing;
 
-
-
-
 //시뮬레이션으로 생성될 노드
-typedef struct node {
+typedef struct node
+{
 	int start;
 	int end;
-	struct node* next; // 아직 typedef되지 않았으므로 NODE*라고 쓰지 못함
-}NODE;
+	struct node *next; // 아직 typedef되지 않았으므로 NODE*라고 쓰지 못함
+} NODE;
 
 //20층으로 각각 구별해서 노드를 저장
-NODE head[20];
+NODE nhead[20];
 
 void addFirst(NODE *target, int st, int e) // target층에 저장
 {
@@ -28,12 +26,12 @@ void addFirst(NODE *target, int st, int e) // target층에 저장
 	newNode->end = e;
 }
 
-void removeFirst(NODE *target)    // 기준 노드의 다음 노드를 삭제하는 함수
+void removeFirst(NODE *target) // 기준 노드의 다음 노드를 삭제하는 함수
 {
-    NODE *removeNode = target->next;    // 기준 노드의 다음 노드 주소를 저장
-    target->next = removeNode->next;     // 기준 노드의 다음 노드에 삭제할 노드의 다음 노드를 지정
+	NODE *removeNode = target->next; // 기준 노드의 다음 노드 주소를 저장
+	target->next = removeNode->next; // 기준 노드의 다음 노드에 삭제할 노드의 다음 노드를 지정
 
-    free(removeNode);    // 노드 메모리 해제
+	free(removeNode); // 노드 메모리 해제
 }
 
 void print_list(NODE target)
@@ -48,35 +46,31 @@ void print_list(NODE target)
 		newNode = newNode->next;
 	}
 	printf(")\n");
-
 }
 
-
-
-
-void* makingneeds(void *sth)
+void *make(void *sth)
 {
 	pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
-	while(1)
+	while (1)
 	{
 		int a = rand() % 20 + 1;
-		int b = rand() % 19 + 1;
+		int b = rand() % 19 + 1; 							//목적층은 출발층과 달라야함
 		if (a <= b)
 		{
 			b = b + 1;
 		}
-		addFirst(&head[a - 1], a, b);
+		addFirst(&nhead[a - 1], a, b);
 		Sleep(100);
 	}
 }
-void* print(void *sth)
+void *print(void *sth)
 {
 	pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
 	while (1)
 	{
 		for (int i = 0; i < 20; i++)
 		{
-			print_list(head[i]);
+			print_list(nhead[i]);
 		}
 		Sleep(100);
 	}
@@ -90,38 +84,18 @@ int main(void)
 	//각 원소마다 기준이될 층을 입력
 	for (int i = 0; i < 20; i++)
 	{
-		head[i].start = i + 1;
-		head[i].next = NULL;
+		nhead[i].start = i + 1;
+		nhead[i].next = NULL;
 	}
 
-	pthread_create(&making, NULL, &makingneeds, NULL);
+	pthread_create(&making, NULL, &make, NULL);
 	pthread_create(&printing, NULL, &print, NULL);
 
 	Sleep(5000);
-
-	struct NODE *curr = head->next;    // 연결 리스트 순회용 포인터에 첫 번째 노드의 주소 저장
-    while (curr != NULL)               // 포인터가 NULL이 아닐 때 계속 반복
-    { 
-        printf("%d\n", curr->data);    // 현재 노드의 데이터 출력
-        curr = curr->next;             // 포인터에 다음 노드의 주소 저장
-    }
-
-    curr = head->next;      // 연결 리스트 순회용 포인터에 첫 번째 노드의 주소 저장
-    while (curr != NULL)    // 포인터가 NULL이 아닐 때 계속 반복
-    {
-        struct NODE *next = curr->next;    // 현재 노드의 다음 노드 주소를 임시로 저장
-        free(curr);                        // 현재 노드 메모리 해제
-        curr = next;                       // 포인터에 다음 노드의 주소 저장
-    }
-
-    free(head);    // 머리 노드 메모리 해제
 
 	pthread_cancel(making);
 	pthread_cancel(printing);
 	pthread_join(making, NULL);
 	pthread_join(printing, NULL);
-
-
-
 	return 0;
 }

@@ -15,15 +15,15 @@
 
 # 명령 줄 히스토리 (새것부터 오래된 것 순):
 :wq
-|2,0,1495631151,,"wq"
+|2,0,1496131084,,"wq"
 :w
-|2,0,1495630975,,"w"
+|2,0,1495865555,,"w"
+:W
+|2,0,1495864720,,"W"
 :Wq
 |2,0,1494331384,,"Wq"
 :q!
 |2,0,1493637603,,"q!"
-:W
-|2,0,1493569000,,"W"
 :ㅉ
 |2,0,1493562213,,"ㅉ"
 :ㅈ
@@ -50,49 +50,131 @@
 # Debug Line 히스토리 (새것부터 오래된 것 순):
 
 # 레지스터:
-"1	CHAR	0
-	
-	
-|3,0,1,0,2,0,1493527314,"",""
-""-	CHAR	0
+""1	LINE	0
+			case 2:
+				break;
+|3,1,1,1,2,0,1495864714,"		case 2:","			break;"
+"2	LINE	0
+				}
+|3,0,2,1,1,0,1495864707,"			}"
+"3	LINE	0
+						printf("%s %d\n", buffer.name,buffer.tel);
+|3,0,3,1,1,0,1495864706,"					printf(\"%s %d\\n\", buffer.name,buffer.tel);"
+"4	LINE	0
+					if(strcmp(buffer.name, sch) == 0)
+|3,0,4,1,1,0,1495864706,"				if(strcmp(buffer.name, sch) == 0)"
+"5	LINE	0
+					fseek(fp, sizeof(struct phonebook), SEEK_CUR);
+|3,0,5,1,1,0,1495864706,"				fseek(fp, sizeof(struct phonebook), SEEK_CUR);"
+"6	LINE	0
+					read++;
+|3,0,6,1,1,0,1495864705,"				read++;"
+"7	LINE	0
+					fread(&buffer, sizeof(buffer), 1, fp);
+|3,0,7,1,1,0,1495864705,"				fread(&buffer, sizeof(buffer), 1, fp);"
+"8	LINE	0
+				{
+|3,0,8,1,1,0,1495864705,"			{"
+"9	LINE	0
+				while( size == read)
+|3,0,9,1,1,0,1495864704,"			while( size == read)"
+"-	CHAR	0
 	;
-|3,1,36,0,1,0,1494331369,";"
+|3,0,36,0,1,0,1494331369,";"
 
 # 파일 마크:
-'0  100  0  ~/help.c
-|4,48,100,0,1495631151,"~/help.c"
-'1  5  19  ~/we.c
-|4,49,5,19,1495630976,"~/we.c"
-'2  98  0  ~/we.c
-|4,50,98,0,1495630939,"~/we.c"
-'3  98  0  ~/we.c
-|4,51,98,0,1495630939,"~/we.c"
-'4  553  0  ~/digitalwatch.c
-|4,52,553,0,1494346413,"~/digitalwatch.c"
-'5  1105  0  ~/digitalwatch.c
-|4,53,1105,0,1494344134,"~/digitalwatch.c"
+'0  1  0  ~/zzz.c
+|4,48,1,0,1496131084,"~/zzz.c"
+'1  49  32  ~/16_4.c
+|4,49,49,32,1495865581,"~/16_4.c"
+'2  100  0  ~/help.c
+|4,50,100,0,1495631151,"~/help.c"
+'3  5  19  ~/we.c
+|4,51,5,19,1495630976,"~/we.c"
+'4  98  0  ~/we.c
+|4,52,98,0,1495630939,"~/we.c"
+'5  98  0  ~/we.c
+|4,53,98,0,1495630939,"~/we.c"
 '6  553  0  ~/digitalwatch.c
-|4,54,553,0,1494344134,"~/digitalwatch.c"
-'7  1097  0  ~/digitalwatch.c
-|4,55,1097,0,1494341740,"~/digitalwatch.c"
-'8  1097  0  ~/digitalwatch.c
-|4,56,1097,0,1494341740,"~/digitalwatch.c"
-'9  545  0  ~/digitalwatch.c
-|4,57,545,0,1494341740,"~/digitalwatch.c"
+|4,54,553,0,1494346413,"~/digitalwatch.c"
+'7  1105  0  ~/digitalwatch.c
+|4,55,1105,0,1494344134,"~/digitalwatch.c"
+'8  553  0  ~/digitalwatch.c
+|4,56,553,0,1494344134,"~/digitalwatch.c"
+'9  1097  0  ~/digitalwatch.c
+|4,57,1097,0,1494341740,"~/digitalwatch.c"
 
 # 점프목록 (새것이 먼저):
+-'  1  0  ~/zzz.c
+|4,39,1,0,1496131084,"~/zzz.c"
+-'  49  32  ~/16_4.c
+|4,39,49,32,1495865581,"~/16_4.c"
+-'  49  32  ~/16_4.c
+|4,39,49,32,1495865581,"~/16_4.c"
+-'  1  0  ~/16_4.c
+|4,39,1,0,1495864118,"~/16_4.c"
+-'  1  0  ~/16_4.c
+|4,39,1,0,1495864118,"~/16_4.c"
 -'  100  0  ~/help.c
 |4,39,100,0,1495631151,"~/help.c"
+-'  100  0  ~/help.c
+|4,39,100,0,1495631151,"~/help.c"
+-'  100  0  ~/help.c
+|4,39,100,0,1495631151,"~/help.c"
+-'  100  0  ~/help.c
+|4,39,100,0,1495631151,"~/help.c"
+-'  1  0  ~/help.c
+|4,39,1,0,1495631146,"~/help.c"
+-'  1  0  ~/help.c
+|4,39,1,0,1495631146,"~/help.c"
+-'  1  0  ~/help.c
+|4,39,1,0,1495631146,"~/help.c"
 -'  1  0  ~/help.c
 |4,39,1,0,1495631146,"~/help.c"
 -'  5  19  ~/we.c
 |4,39,5,19,1495630976,"~/we.c"
 -'  5  19  ~/we.c
 |4,39,5,19,1495630976,"~/we.c"
+-'  5  19  ~/we.c
+|4,39,5,19,1495630976,"~/we.c"
+-'  5  19  ~/we.c
+|4,39,5,19,1495630976,"~/we.c"
+-'  5  19  ~/we.c
+|4,39,5,19,1495630976,"~/we.c"
+-'  5  19  ~/we.c
+|4,39,5,19,1495630976,"~/we.c"
+-'  5  19  ~/we.c
+|4,39,5,19,1495630976,"~/we.c"
+-'  5  19  ~/we.c
+|4,39,5,19,1495630976,"~/we.c"
 -'  98  0  ~/we.c
 |4,39,98,0,1495630963,"~/we.c"
 -'  98  0  ~/we.c
 |4,39,98,0,1495630963,"~/we.c"
+-'  98  0  ~/we.c
+|4,39,98,0,1495630963,"~/we.c"
+-'  98  0  ~/we.c
+|4,39,98,0,1495630963,"~/we.c"
+-'  98  0  ~/we.c
+|4,39,98,0,1495630963,"~/we.c"
+-'  98  0  ~/we.c
+|4,39,98,0,1495630963,"~/we.c"
+-'  98  0  ~/we.c
+|4,39,98,0,1495630963,"~/we.c"
+-'  98  0  ~/we.c
+|4,39,98,0,1495630963,"~/we.c"
+-'  98  0  ~/we.c
+|4,39,98,0,1495630939,"~/we.c"
+-'  98  0  ~/we.c
+|4,39,98,0,1495630939,"~/we.c"
+-'  98  0  ~/we.c
+|4,39,98,0,1495630939,"~/we.c"
+-'  98  0  ~/we.c
+|4,39,98,0,1495630939,"~/we.c"
+-'  98  0  ~/we.c
+|4,39,98,0,1495630939,"~/we.c"
+-'  98  0  ~/we.c
+|4,39,98,0,1495630939,"~/we.c"
 -'  98  0  ~/we.c
 |4,39,98,0,1495630939,"~/we.c"
 -'  98  0  ~/we.c
@@ -105,6 +187,78 @@
 |4,39,1,0,1495630935,"~/we.c"
 -'  1  0  ~/we.c
 |4,39,1,0,1495630935,"~/we.c"
+-'  1  0  ~/we.c
+|4,39,1,0,1495630935,"~/we.c"
+-'  1  0  ~/we.c
+|4,39,1,0,1495630935,"~/we.c"
+-'  1  0  ~/we.c
+|4,39,1,0,1495630935,"~/we.c"
+-'  1  0  ~/we.c
+|4,39,1,0,1495630935,"~/we.c"
+-'  1  0  ~/we.c
+|4,39,1,0,1495630935,"~/we.c"
+-'  1  0  ~/we.c
+|4,39,1,0,1495630935,"~/we.c"
+-'  1  0  ~/we.c
+|4,39,1,0,1495630935,"~/we.c"
+-'  1  0  ~/we.c
+|4,39,1,0,1495630935,"~/we.c"
+-'  1  0  ~/we.c
+|4,39,1,0,1495630935,"~/we.c"
+-'  1  0  ~/we.c
+|4,39,1,0,1495630935,"~/we.c"
+-'  1  0  ~/we.c
+|4,39,1,0,1495630935,"~/we.c"
+-'  1  0  ~/we.c
+|4,39,1,0,1495630935,"~/we.c"
+-'  553  0  ~/digitalwatch.c
+|4,39,553,0,1494346413,"~/digitalwatch.c"
+-'  553  0  ~/digitalwatch.c
+|4,39,553,0,1494346413,"~/digitalwatch.c"
+-'  553  0  ~/digitalwatch.c
+|4,39,553,0,1494346413,"~/digitalwatch.c"
+-'  553  0  ~/digitalwatch.c
+|4,39,553,0,1494346413,"~/digitalwatch.c"
+-'  553  0  ~/digitalwatch.c
+|4,39,553,0,1494346413,"~/digitalwatch.c"
+-'  553  0  ~/digitalwatch.c
+|4,39,553,0,1494346413,"~/digitalwatch.c"
+-'  553  0  ~/digitalwatch.c
+|4,39,553,0,1494346413,"~/digitalwatch.c"
+-'  553  0  ~/digitalwatch.c
+|4,39,553,0,1494346413,"~/digitalwatch.c"
+-'  553  0  ~/digitalwatch.c
+|4,39,553,0,1494346413,"~/digitalwatch.c"
+-'  553  0  ~/digitalwatch.c
+|4,39,553,0,1494346413,"~/digitalwatch.c"
+-'  553  0  ~/digitalwatch.c
+|4,39,553,0,1494346413,"~/digitalwatch.c"
+-'  553  0  ~/digitalwatch.c
+|4,39,553,0,1494346413,"~/digitalwatch.c"
+-'  553  0  ~/digitalwatch.c
+|4,39,553,0,1494346413,"~/digitalwatch.c"
+-'  553  0  ~/digitalwatch.c
+|4,39,553,0,1494346413,"~/digitalwatch.c"
+-'  553  0  ~/digitalwatch.c
+|4,39,553,0,1494346413,"~/digitalwatch.c"
+-'  553  0  ~/digitalwatch.c
+|4,39,553,0,1494346413,"~/digitalwatch.c"
+-'  553  0  ~/digitalwatch.c
+|4,39,553,0,1494346413,"~/digitalwatch.c"
+-'  553  0  ~/digitalwatch.c
+|4,39,553,0,1494346413,"~/digitalwatch.c"
+-'  553  0  ~/digitalwatch.c
+|4,39,553,0,1494346413,"~/digitalwatch.c"
+-'  553  0  ~/digitalwatch.c
+|4,39,553,0,1494346413,"~/digitalwatch.c"
+-'  553  0  ~/digitalwatch.c
+|4,39,553,0,1494346413,"~/digitalwatch.c"
+-'  553  0  ~/digitalwatch.c
+|4,39,553,0,1494346413,"~/digitalwatch.c"
+-'  553  0  ~/digitalwatch.c
+|4,39,553,0,1494346413,"~/digitalwatch.c"
+-'  553  0  ~/digitalwatch.c
+|4,39,553,0,1494346413,"~/digitalwatch.c"
 -'  553  0  ~/digitalwatch.c
 |4,39,553,0,1494346413,"~/digitalwatch.c"
 -'  553  0  ~/digitalwatch.c
@@ -137,152 +291,45 @@
 |4,39,1,0,1494346403,"~/digitalwatch.c"
 -'  1  0  ~/digitalwatch.c
 |4,39,1,0,1494346403,"~/digitalwatch.c"
--'  1105  0  ~/digitalwatch.c
-|4,39,1105,0,1494344134,"~/digitalwatch.c"
--'  553  0  ~/digitalwatch.c
-|4,39,553,0,1494344134,"~/digitalwatch.c"
--'  1105  0  ~/digitalwatch.c
-|4,39,1105,0,1494344134,"~/digitalwatch.c"
--'  553  0  ~/digitalwatch.c
-|4,39,553,0,1494344134,"~/digitalwatch.c"
--'  1105  0  ~/digitalwatch.c
-|4,39,1105,0,1494344134,"~/digitalwatch.c"
--'  553  0  ~/digitalwatch.c
-|4,39,553,0,1494344134,"~/digitalwatch.c"
--'  1105  0  ~/digitalwatch.c
-|4,39,1105,0,1494344134,"~/digitalwatch.c"
--'  553  0  ~/digitalwatch.c
-|4,39,553,0,1494344134,"~/digitalwatch.c"
--'  1105  0  ~/digitalwatch.c
-|4,39,1105,0,1494344134,"~/digitalwatch.c"
--'  553  0  ~/digitalwatch.c
-|4,39,553,0,1494344134,"~/digitalwatch.c"
--'  1105  0  ~/digitalwatch.c
-|4,39,1105,0,1494344134,"~/digitalwatch.c"
--'  553  0  ~/digitalwatch.c
-|4,39,553,0,1494344134,"~/digitalwatch.c"
--'  1105  0  ~/digitalwatch.c
-|4,39,1105,0,1494344134,"~/digitalwatch.c"
--'  553  0  ~/digitalwatch.c
-|4,39,553,0,1494344134,"~/digitalwatch.c"
--'  1105  0  ~/digitalwatch.c
-|4,39,1105,0,1494344134,"~/digitalwatch.c"
--'  553  0  ~/digitalwatch.c
-|4,39,553,0,1494344134,"~/digitalwatch.c"
 -'  1  0  ~/digitalwatch.c
-|4,39,1,0,1494344129,"~/digitalwatch.c"
+|4,39,1,0,1494346403,"~/digitalwatch.c"
 -'  1  0  ~/digitalwatch.c
-|4,39,1,0,1494344129,"~/digitalwatch.c"
+|4,39,1,0,1494346403,"~/digitalwatch.c"
 -'  1  0  ~/digitalwatch.c
-|4,39,1,0,1494344129,"~/digitalwatch.c"
+|4,39,1,0,1494346403,"~/digitalwatch.c"
 -'  1  0  ~/digitalwatch.c
-|4,39,1,0,1494344129,"~/digitalwatch.c"
+|4,39,1,0,1494346403,"~/digitalwatch.c"
 -'  1  0  ~/digitalwatch.c
-|4,39,1,0,1494344129,"~/digitalwatch.c"
+|4,39,1,0,1494346403,"~/digitalwatch.c"
 -'  1  0  ~/digitalwatch.c
-|4,39,1,0,1494344129,"~/digitalwatch.c"
+|4,39,1,0,1494346403,"~/digitalwatch.c"
 -'  1  0  ~/digitalwatch.c
-|4,39,1,0,1494344129,"~/digitalwatch.c"
--'  1  0  ~/digitalwatch.c
-|4,39,1,0,1494344129,"~/digitalwatch.c"
--'  1097  0  ~/digitalwatch.c
-|4,39,1097,0,1494341740,"~/digitalwatch.c"
--'  545  0  ~/digitalwatch.c
-|4,39,545,0,1494341740,"~/digitalwatch.c"
--'  545  0  ~/digitalwatch.c
-|4,39,545,0,1494341740,"~/digitalwatch.c"
--'  1097  0  ~/digitalwatch.c
-|4,39,1097,0,1494341740,"~/digitalwatch.c"
--'  545  0  ~/digitalwatch.c
-|4,39,545,0,1494341740,"~/digitalwatch.c"
--'  545  0  ~/digitalwatch.c
-|4,39,545,0,1494341740,"~/digitalwatch.c"
--'  1097  0  ~/digitalwatch.c
-|4,39,1097,0,1494341740,"~/digitalwatch.c"
--'  545  0  ~/digitalwatch.c
-|4,39,545,0,1494341740,"~/digitalwatch.c"
--'  545  0  ~/digitalwatch.c
-|4,39,545,0,1494341740,"~/digitalwatch.c"
--'  1097  0  ~/digitalwatch.c
-|4,39,1097,0,1494341740,"~/digitalwatch.c"
--'  545  0  ~/digitalwatch.c
-|4,39,545,0,1494341740,"~/digitalwatch.c"
--'  545  0  ~/digitalwatch.c
-|4,39,545,0,1494341740,"~/digitalwatch.c"
--'  1097  0  ~/digitalwatch.c
-|4,39,1097,0,1494341740,"~/digitalwatch.c"
--'  545  0  ~/digitalwatch.c
-|4,39,545,0,1494341740,"~/digitalwatch.c"
--'  545  0  ~/digitalwatch.c
-|4,39,545,0,1494341740,"~/digitalwatch.c"
--'  1097  0  ~/digitalwatch.c
-|4,39,1097,0,1494341740,"~/digitalwatch.c"
--'  545  0  ~/digitalwatch.c
-|4,39,545,0,1494341740,"~/digitalwatch.c"
--'  545  0  ~/digitalwatch.c
-|4,39,545,0,1494341740,"~/digitalwatch.c"
--'  1097  0  ~/digitalwatch.c
-|4,39,1097,0,1494341740,"~/digitalwatch.c"
--'  545  0  ~/digitalwatch.c
-|4,39,545,0,1494341740,"~/digitalwatch.c"
--'  545  0  ~/digitalwatch.c
-|4,39,545,0,1494341740,"~/digitalwatch.c"
--'  1097  0  ~/digitalwatch.c
-|4,39,1097,0,1494341740,"~/digitalwatch.c"
--'  545  0  ~/digitalwatch.c
-|4,39,545,0,1494341740,"~/digitalwatch.c"
--'  545  0  ~/digitalwatch.c
-|4,39,545,0,1494341740,"~/digitalwatch.c"
--'  1  0  ~/digitalwatch.c
-|4,39,1,0,1494341732,"~/digitalwatch.c"
--'  1  0  ~/digitalwatch.c
-|4,39,1,0,1494341732,"~/digitalwatch.c"
--'  1  0  ~/digitalwatch.c
-|4,39,1,0,1494341732,"~/digitalwatch.c"
--'  1  0  ~/digitalwatch.c
-|4,39,1,0,1494341732,"~/digitalwatch.c"
--'  1  0  ~/digitalwatch.c
-|4,39,1,0,1494341732,"~/digitalwatch.c"
--'  1  0  ~/digitalwatch.c
-|4,39,1,0,1494341732,"~/digitalwatch.c"
--'  1  0  ~/digitalwatch.c
-|4,39,1,0,1494341732,"~/digitalwatch.c"
--'  1  0  ~/digitalwatch.c
-|4,39,1,0,1494341732,"~/digitalwatch.c"
--'  3  0  ~/be.c
-|4,39,3,0,1494331403,"~/be.c"
--'  3  0  ~/be.c
-|4,39,3,0,1494331403,"~/be.c"
--'  3  0  ~/be.c
-|4,39,3,0,1494331403,"~/be.c"
--'  3  0  ~/be.c
-|4,39,3,0,1494331403,"~/be.c"
--'  3  0  ~/be.c
-|4,39,3,0,1494331403,"~/be.c"
--'  3  0  ~/be.c
-|4,39,3,0,1494331403,"~/be.c"
--'  3  0  ~/be.c
-|4,39,3,0,1494331403,"~/be.c"
--'  3  0  ~/be.c
-|4,39,3,0,1494331403,"~/be.c"
--'  3  0  ~/be.c
-|4,39,3,0,1494331403,"~/be.c"
--'  3  0  ~/be.c
-|4,39,3,0,1494331403,"~/be.c"
--'  3  0  ~/be.c
-|4,39,3,0,1494331403,"~/be.c"
--'  3  0  ~/be.c
-|4,39,3,0,1494331403,"~/be.c"
--'  3  0  ~/be.c
-|4,39,3,0,1494331403,"~/be.c"
--'  3  0  ~/be.c
-|4,39,3,0,1494331403,"~/be.c"
--'  3  0  ~/be.c
-|4,39,3,0,1494331403,"~/be.c"
--'  3  0  ~/be.c
-|4,39,3,0,1494331403,"~/be.c"
+|4,39,1,0,1494346403,"~/digitalwatch.c"
 
 # 파일내의 마크 히스토리 (새것부터 오래된 순):
+
+> ~/zzz.c
+	*	1496131084	0
+	"	1	0
+
+> ~/16_4.c
+	*	1495865555	0
+	"	49	32
+	^	49	33
+	.	49	32
+	+	2	0
+	+	30	0
+	+	29	33
+	+	42	33
+	+	43	0
+	+	50	0
+	+	42	10
+	+	29	33
+	+	48	11
+	+	45	15
+	+	49	8
+	+	46	23
+	+	49	32
 
 > ~/help.c
 	*	1495631150	0
