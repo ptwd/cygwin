@@ -1,53 +1,3 @@
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.
-gcc ajfl.c./ac
-./a
-./a./a
-./a./a
-gcc ajfl.c
-gcc ajfl.c
-./a
 gcc ajfl.c
 gcc ajfl.c
 ./a
@@ -497,4 +447,54 @@ gcc e.c
 gcc e.c
 ./a
 gcc zzz.c
+./a
+gcc zzz.c
+gcc zzz.c
+gcc zzz.c
+./a
+gcc zzz.c
+./a
+gcc zzz.c
+./a
+gcc zzz.c
+./a
+gcc zzz.c
+./a
+gcc zzz.c
+./a
+gcc zzz.c
+./a
+gcc zzz.c
+./a
+gcc zzz.c
+./a
+gcc zzz.c
+./a
+./a
+gcc zzz.c
+./a
+gcc ele.c
+./a
+gcc ele.c
+./a
+gcc ele.c
+./a
+gcc ele.c
+./a
+gcc ele.c
+./a
+gcc ele.c
+gcc ele.c
+./a
+gcc ele.c
+gcc ele.c
+gcc ele.c
+gcc ele.c
+gcc ele.c
+gcc ele.c
+./a
+gcc ele.c
+./a
+vi elevator1.c
+gcc elevator1.c
 ./a
