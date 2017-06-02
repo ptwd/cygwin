@@ -3,26 +3,37 @@
 #include <time.h>
 #include <pthread.h>
 #include <windows.h>
+#include <math.h>
 
 pthread_t making;
 pthread_t printing;
 
-//시뮬레이션으로 생성될 노드
-typedef struct node
+int imwaiting[7] = {0, 0, 0, 0, 0, 0, 0}; // 자신이 대기상태인지 아닌지 시작할때는 모두 대기 상태
+typedef struct elevator
+{
+    int nfloor; //현재 층
+    int ofloor; //목표 층
+    int state;  //현재 상태 1 ,0,-1
+} ELE;
+
+ELE D1, D2, U1, U2, A1, A2; // 6개 선언 down, up, all 2개씩
+
+typedef struct node //입력으로 생성될 노드
 {
     int start;
     int end;
     struct node *next; // 아직 typedef되지 않았으므로 NODE*라고 쓰지 못함
 } NODE;
 
-//20층으로 각각 구별해서 노드를 저장
-NODE nheadW[21]; // 전층용을 타야하는 입력을 저장
-NODE nheadS[21]; // 전층용을 사용하지 않아도 되는 입력을 저장
-                 // 직관성을 높이기 위해 21개를 선언 (1층에 해당하는 것들을 [0]에 저장하지 않고 [1]에 저장하려고)
+//20층으로 각각 구별해서 노드를 저장 P는 위로가는(plus) M는 아래로가는(minus)
+NODE nheadWP[21]; // 전층용을 타야하는 입력을 저장
+NODE nheadWM[21];
+NODE nheadSP[21]; // 전층용을 사용하지 않아도 되는 입력을 저장
+NODE nheadSM[21];
+// 직관성을 높이기 위해 21개를 선언 (1층에 해당하는 것들을 [0]에 저장하지 않고 [1]에 저장하려고)
 
-                 
+int wait = 0; //대기 상태의 사람들을 구함 요구가 들어올때마다 +1 스택에서 없어질때마다 -1
 int stop = 0;
-
 
 void addFirst(NODE *target, int st, int e) // target층에 저장    출발층, 도착층을 받고 노드를 만들어서 스택에 저장
 {
@@ -31,38 +42,41 @@ void addFirst(NODE *target, int st, int e) // target층에 저장    출발층, 
     target->next = newNode;
     newNode->start = st;
     newNode->end = e;
+    wait++;
+    //메모리 할당 오류 체크 할까 말까?
 }
-void removeFirst(NODE *target) // 기준 노드의 다음 노드를 삭제하는 함수
+
+void removeFirst(NODE *target) // target층의 첫번째 노드를 삭제함
 {
-    NODE *removeNode = target->next; // 기준 노드의 다음 노드 주소를 저장
-    target->next = removeNode->next; // 기준 노드의 다음 노드에 삭제할 노드의 다음 노드를 지정
+    NODE *removeNode = target->next; // 첫번째 노드 기억
+    target->next = removeNode->next; //target층이 두번째 노드를 가리키게 함
 
     free(removeNode); // 노드 메모리 해제
+    wait--;
 }
 
-void addNode(NODE *target, NODE *ins) // 만들어져 있는 노드를 스택에 저장 
+void addNode(NODE *target, NODE *ins) // 만들어져 있는 노드를 스택에 저장
 {
     ins->next = target->next;
     target->next = ins;
 }
-
 
 int isEmpty(NODE *target) // 임시로 만듬
 {
     return (target->next == NULL);
 }
 
-int get_len(NODE *target)  // target층에 해당하는 값들의 갯수를 구함
+int get_len(NODE *target) // target층에 해당하는 값들의 갯수를 구함
 {
     NODE *temp = target->next;
     int i = 0;
-    while(temp !=NULL){
+    while (temp != NULL)
+    {
         i++;
         temp = temp->next;
     }
     return i;
 }
-
 
 NODE *popfromin(NODE *target) //특정층에서 노드(입력)를 하나 빼옴
 {
@@ -72,21 +86,17 @@ NODE *popfromin(NODE *target) //특정층에서 노드(입력)를 하나 빼옴
     return readNode;
 }
 
-
 /*NODE elevator6[21]; // 엘레베이터 6의 목적층을 기준으로한 헤드노드들을 20개만듬(전층용)
 get_len(nheadW[1]) => 1층이 출발인 스택을 검사 (전층용)
 for(int i = 0; i < get_len(nheadW[1]), i++ )
 {
-    NODE *hi = popfromin(nheadW[1]); // 하나빼옴
-    addNode( elevator6[hi.end], hi);
+NODE *hi = popfromin(nheadW[1]); // 하나빼옴
+addNode( elevator6[hi.end], hi);
 }
 이런식으로 하면 엘레베이터6(전층용)이 현재층이 1층일 때 1층, 전층용에 해당하는 스택의 값들을 가져오고, 그것들을 다시 엘레베이터 스택에다가 목적지 층을 기준으로 저장
 */
 
-
 //addNode( elevator6[nheadw], popfromin(nheadW(1)))
-
-
 
 void *make(void *sth)
 {
@@ -98,29 +108,45 @@ void *make(void *sth)
     {
         a = rand() % 20 + 1;
         b = rand() % 19 + 1; //시작층과 도착층이 같게하지 않기위함
-        if (a <= b)
+        if (a <= b)          //P의 조건
         {
-            b = b + 1;
-        }
-
-        if (a <= 10)
-        {
-            if (b <= 10)
-                addFirst(&nheadS[a], a, b);
+            b = b + 1; // 같지않게
+            if (a <= 10)
+            {
+                if (b <= 10)
+                    addFirst(&nheadSP[a], a, b);
+                else
+                    addFirst(&nheadWP[a], a, b);
+            }
             else
-                addFirst(&nheadW[a], a, b);
+            {
+                if (b >= 11)
+                    addFirst(&nheadSP[a], a, b);
+                else
+                    addFirst(&nheadWP[a], a, b);
+            }
         }
         else
-        {
-            if (b >= 11)
-                addFirst(&nheadS[a], a, b);
+        { //M의 조건
+            if (a <= 10)
+            {
+                if (b <= 10)
+                    addFirst(&nheadSM[a], a, b);
+                else
+                    addFirst(&nheadWM[a], a, b);
+            }
             else
-                addFirst(&nheadW[a], a, b);
+            {
+                if (b >= 11)
+                    addFirst(&nheadSM[a], a, b);
+                else
+                    addFirst(&nheadWM[a], a, b);
+            }
         }
+
         Sleep(100);
     }
 }
-
 
 void print_list(NODE target)
 {
@@ -144,9 +170,172 @@ void *print(void *sth)
     {
         for (int i = 1; i < 21; i++)
         {
-            print_list(nheadS[i]);
-            print_list(nheadW[i]);
+            print_list(nheadSP[i]);
+            print_list(nheadSM[i]);
+            print_list(nheadWP[i]);
+            print_list(nheadWM[i]);
         }
+        Sleep(100);
+    }
+}
+
+void *elevatormove(void *sth) // 일단 전층용 생각
+{
+    //pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+    //pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
+    A1.nfloor = 1;
+    A1.ofloor = 0;
+    A1.state = 0;
+
+    if (A1.state == 0)
+
+        while (!wait)
+        {
+        } // 요구가 들어오면 while문 멈춤
+}
+
+//일단 대충 만들어봄
+
+int comparisonforDS(int a, int b)
+{
+    if (D1.state == 1 && D1.nfloor < a)
+    {
+        return 1;
+    }
+    if (D1.state == -1 && D1.nfloor > b)
+    {
+        return 1;
+    }
+    if (D2.state == 1 && D2.nfloor < a)
+    {
+        return 1;
+    }
+    if (D2.state == -1 && D2.nfloor > b)
+    {
+        return 1;
+    }
+    if (A1.state == 1 && A1.nfloor < a)
+    {
+        return 1;
+    }
+    if (A1.state == -1 && A1.nfloor > b)
+    {
+        return 1;
+    }
+    if (A2.state == 1 && A2.nfloor < a)
+    {
+        return 1;
+    }
+    if (A2.state == -1 && A2.nfloor > b)
+    {
+        return 1;
+    }
+    return 0;
+}
+
+int miniDS(a)
+{
+    int who = 0;
+    int temp = 100; // 100이상 차이날 리는 없으니까
+    if (D1.state == 0)
+    {
+        temp = abs(a - D1.nfloor);
+        who = 1;
+    }
+    if (D2.state == 0)
+    {
+        if (temp > abs(a - D2.nfloor))
+        {
+            temp = abs(a - D2.nfloor);
+            who = 2;
+        }
+    }
+    if (A1.state == 0)
+    {
+        if (temp > abs(a - A1.nfloor))
+        {
+            temp = abs(a - A1.nfloor);
+            who = 3;
+        }
+    }
+    if (A2.state == 0)
+    {
+        if (temp > abs(a - A2.nfloor))
+        {
+            who = 4;
+        }
+    }
+    return who;
+}
+
+void real()
+{
+
+    int a, b;
+    while (!stop)
+    {
+        a = rand() % 20 + 1;
+        b = rand() % 19 + 1; //시작층과 도착층이 같게하지 않기위함
+        if (a <= b)          //P의 조건
+        {
+            b = b + 1; // 같지않게
+            if (a <= 10)
+            {
+                if (b <= 10)
+                {
+                    if (comparsionforDS(a, b) != 0)
+                        addFirst(&nheadSP[a], a, b);
+                    else
+                    {
+                        switch (miniDS(a))
+                        {
+                        case 0:
+                            addFirst(&nheadSP[a], a, b);
+                            break;
+                        case 1:
+                            //D1
+                            break;
+                        case 2:
+                            //D2
+                            break;
+                        case 3:
+                            //A1
+                            break;
+                        case 4:
+                            //A2
+                            break;
+                        }
+                    }
+                }
+                else
+                    addFirst(&nheadWP[a], a, b);
+            }
+            else
+            {
+                if (b >= 11)
+                    addFirst(&nheadSP[a], a, b);
+                else
+                    addFirst(&nheadWP[a], a, b);
+            }
+        }
+        else
+        { //M의 조건
+            if (a <= 10)
+            {
+                if (b <= 10)
+                    addFirst(&nheadSM[a], a, b);
+                else
+                    addFirst(&nheadWM[a], a, b);
+            }
+            else
+            {
+                if (b >= 11)
+                    addFirst(&nheadSM[a], a, b);
+                else
+                    addFirst(&nheadWM[a], a, b);
+            }
+        }
+
         Sleep(100);
     }
 }
@@ -159,8 +348,10 @@ int main(void)
     //각 원소마다 기준이될 층을 입력
     for (int i = 1; i <= 20; i++)
     {
-        nheadW[i].start = i;
-        nheadS[i].start = i;
+        nheadSP[i].start = i;
+        nheadSM[i].start = i;
+        nheadWP[i].start = i;
+        nheadWM[i].start = i;
     }
 
     pthread_create(&making, NULL, &make, NULL);
@@ -175,4 +366,3 @@ int main(void)
 
     return 0;
 }
-
