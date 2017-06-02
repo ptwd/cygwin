@@ -4,6 +4,7 @@
 #include <pthread.h>
 #include <windows.h>
 #include <math.h>
+#include <stdarg.h>
 
 pthread_t making;
 pthread_t printing;
@@ -148,6 +149,53 @@ void *make(void *sth)
     }
 }
 
+void *make2(void *sth)
+{
+    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+    pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
+
+    int sit, a, b;
+    while (!stop) // rand()함수는 실제로 랜덤하지 않으므로 시간있으면 다른함수로
+    {
+        sit = rand() % 4; //case가 0이면 -- 1이면 -+ 2면 +- 3이면 ++
+        a = rand() % 10 + 1;
+        b = rand() % 9 + 1; //시작층과 도착층이 같게하지 않기위함
+
+        swtich(sit)
+        {
+        case 0:
+            if (a <= b)
+            {
+                b++;
+                addFirst(&nheadSP[a], a, b);
+            }
+            else
+                addFirst(&nheadSM[a], a, b);
+            break;
+        case 1:
+            b += 10;
+            addFirst(&nheadWP[a], a, b);
+            break;
+        case 2:
+            a += 10;
+            addFirst(&nheadWM[a], a, b);
+            break;
+        case 3:
+            a += 10;
+            b += 10;
+            if (a <= b)
+            {
+                b++;
+                addFirst(&nheadSP[a], a, b);
+            }
+            else
+                addFirst(&nheadSM[a], a, b);
+            break;
+        }
+        Sleep(100);
+    }
+}
+
 void print_list(NODE target)
 {
     NODE *newNode;
@@ -186,50 +234,40 @@ void *elevatormove(void *sth) // 일단 전층용 생각
     A1.nfloor = 1;
     A1.ofloor = 0;
     A1.state = 0;
-
-    if (A1.state == 0)
-
-        while (!wait)
-        {
-        } // 요구가 들어오면 while문 멈춤
 }
 
 //일단 대충 만들어봄
 
-int comparisonforDS(int a, int b)
+int comparisonforDS(int a)
 {
-    if (D1.state == 1 && D1.nfloor < a)
-    {
+    if (D1.state * (a - D1.nfloor) > 0) //ex +방향이라면 출발층이 현재층보다 높아야 태울 수 있다. -도 마찬가지
         return 1;
-    }
-    if (D1.state == -1 && D1.nfloor > b)
-    {
+    if (D2.state * (a - D2.nfloor) > 0)
         return 1;
-    }
-    if (D2.state == 1 && D2.nfloor < a)
-    {
+    if (A1.state * (a - A1.nfloor) > 0)
         return 1;
-    }
-    if (D2.state == -1 && D2.nfloor > b)
-    {
+    if (A2.state * (a - A2.nfloor) > 0)
         return 1;
-    }
-    if (A1.state == 1 && A1.nfloor < a)
-    {
+    return 0;
+}
+int comparisonforUS(int a)
+{
+    if (U1.state * (a - U1.nfloor) > 0)
         return 1;
-    }
-    if (A1.state == -1 && A1.nfloor > b)
-    {
+    if (U2.state * (a - U2.nfloor) > 0)
         return 1;
-    }
-    if (A2.state == 1 && A2.nfloor < a)
-    {
+    if (A1.state * (a - A1.nfloor) > 0)
         return 1;
-    }
-    if (A2.state == -1 && A2.nfloor > b)
-    {
+    if (A2.state * (a - A2.nfloor) > 0)
         return 1;
-    }
+    return 0;
+}
+int comparisonforA(int a)
+{
+    if (A1.state * (a - A1.nfloor) > 0)
+        return 1;
+    if (A2.state * (a - A2.nfloor) > 0)
+        return 1;
     return 0;
 }
 
@@ -239,7 +277,7 @@ int miniDS(a)
     int temp = 100; // 100이상 차이날 리는 없으니까
     if (D1.state == 0)
     {
-        temp = abs(a - D1.nfloor);
+        temp = abs(a - D1.nfloor); //절댓값
         who = 1;
     }
     if (D2.state == 0)
@@ -289,7 +327,7 @@ void real()
                     {
                         switch (miniDS(a))
                         {
-                        case 0:
+                        case 0: // 대기인 상태가 없다
                             addFirst(&nheadSP[a], a, b);
                             break;
                         case 1:
@@ -340,6 +378,101 @@ void real()
     }
 }
 
+void *real2(void *sth)
+{
+    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+    pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
+
+    int sit, a, b;
+    while (!stop) // rand()함수는 실제로 랜덤하지 않으므로 시간있으면 다른함수로
+    {
+        sit = rand() % 4; //case가 0이면 -- 1이면 -+ 2면 +- 3이면 ++
+        a = rand() % 10 + 1;
+        b = rand() % 9 + 1; //시작층과 도착층이 같게하지 않기위함
+
+        swtich(sit)
+        {
+        case 0:
+            if (comparisonforDS(a) == 1)
+            {
+                if (a <= b)
+                {
+                    b++;
+                    addFirst(&nheadSP[a], a, b);
+                }
+                else
+                    addFirst(&nheadSM[a], a, b);
+            }
+            else
+            {
+                switch (miniDS(a))
+                {
+                case 0: // 대기인 상태가 없다
+                    if (a <= b)
+                    {
+                        b++;
+                        addFirst(&nheadSP[a], a, b);
+                    }
+                    else
+                        addFirst(&nheadSM[a], a, b);
+                    break;
+                case 1:
+                    //D1 을 작동시킴!
+                    break;
+                case 2:
+                    //D2
+                    break;
+                case 3:
+                    //A1
+                    break;
+                case 4:
+                    //A2
+                    break;
+                }
+            }
+            break; //걍 DS를 위한 함수 한번에 만들어야할듯?
+
+        case 1:
+            b += 10;
+            addFirst(&nheadWP[a], a, b);
+            break;
+        case 2:
+            a += 10;
+            addFirst(&nheadWM[a], a, b);
+            break;
+        case 3:
+            a += 10;
+            b += 10;
+            if (a <= b)
+            {
+                b++;
+                addFirst(&nheadSP[a], a, b);
+            }
+            else
+                addFirst(&nheadSM[a], a, b);
+            break;
+        }
+        Sleep(100);
+    }
+}
+
+/*int comparison(int a, int args, ...)
+{
+    va_list ap;
+    va_start(ap, args);
+    for (int i = 0; i < args; i++)
+    {
+        ELE temp = va_arg(ap, ELE);
+        if (temp.state * (a - temp.nfloor) > 0))
+            {
+                va_end(ap);
+                return 1;
+            }
+    }
+    va_end(ap);
+    return 0;
+}
+*/
 int main(void)
 {
 
