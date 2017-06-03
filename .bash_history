@@ -1,15 +1,3 @@
-gcc ajfl.c
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
-./a
-gcc ajfl.c
 ,.a
 ./a
 gcc ajfl.c
@@ -498,3 +486,15 @@ gcc ele.c
 vi elevator1.c
 gcc elevator1.c
 ./a
+gcc qwe.c
+./a
+a
+a
+a
+a
+a
+gcc qwe.c
+gcc qwe.c
+./a
+1
+-1
