@@ -302,6 +302,17 @@ void *figureout(void *sth)
                     addFirst(&nheadSP[a], a, b);
                 else
                 {
+                    int key = miniDS(a);
+                    if (key == 0)
+                    {
+                        addFirst(&nheadSP[a], a, b);
+                    }
+                    else
+                    {
+                        qwerqwer(key).state = 1;
+                        qwerqwer(key).ofloor = b;
+                        addFirst(asdfasdf(key,b), a, b);
+                    }
                     switch (miniDS(a))
                     {
                     case 0: // 대기인 상태가 없다
@@ -314,13 +325,19 @@ void *figureout(void *sth)
                         addFirst(&mystackD1[b], a, b);
                         break;
                     case 2:
-                        //D2
+                        D2.state = 1;
+                        D2.ofloor = b;
+                        addFirst(&mystackD2[b], a, b);
                         break;
                     case 3:
-                        //A1
+                        U1.state = 1;
+                        U1.ofloor = b;
+                        addFirst(&mystackU1[b], a, b);
                         break;
                     case 4:
-                        //A2
+                        U2.state = 1;
+                        U2.ofloor = b;
+                        addFirst(&mystackU2[b], a, b);
                         break;
                     }
                 }
@@ -349,37 +366,6 @@ void *figureout(void *sth)
                         //A2
                         break;
                     }
-                }
-            }
-
-            if (comparsionforDS(a) != 0)
-            {
-                if (a < b)
-                    addFirst(&nheadSP[a], a, b);
-                else
-                    addFirst(&nheadSM[a], a, b);
-            }
-            else
-            {
-                switch (miniDS(a))
-                {
-                case 0: // 대기인 상태가 없다
-                    if (a < b)
-                        addFirst(&nheadSP[a], a, b);
-                    else
-                        addFirst(&nheadSM[a], a, b);
-                    break;
-                case 1:
-                    D1.state break;
-                case 2:
-                    //D2
-                    break;
-                case 3:
-                    //A1
-                    break;
-                case 4:
-                    //A2
-                    break;
                 }
             }
         }
@@ -460,6 +446,27 @@ ELE qwerqwer(int i)
     }
 }
 
+NODE *asdfasdf(int i, int b)
+{
+    swtich(i)
+    {
+    case 1:
+        return &mystackD1[b];
+    case 2:
+        return &mystackD2[b];
+    case 3:
+        return &mystackU1[b];
+    case 4:
+        return &mystackU2[b];
+    case 5:
+        return &mystackA1[b];
+    case 6:
+        return &mystackA2[b];
+    default:
+        return NULL;
+    }
+}
+
 qwerqwer(miniDS(a)).state = 1;
 qwerqwer(miniDS(a)).ofloor = b;
 addFirst(&mystackD1[b], a, b);
@@ -473,8 +480,7 @@ int main(void)
     {
         nheadSP[i].start = i;
         nheadSM[i].start = i;
-        nheadWP[i].start = i;
-        nheadWM[i].start = i;
+        nheadW[i].start = i;
     }
     //굳이?
 

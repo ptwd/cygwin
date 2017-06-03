@@ -184,3 +184,193 @@ void *make(void *sth)
 }
 
 
+void *figureout(void *sth)
+{
+    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+    pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
+
+    int a, b;
+    while (!stop)
+    {
+        a = rand() % 20 + 1;
+        b = rand() % 19 + 1; //시작층과 도착층이 같게하지 않기위함
+        if (a <= b)          //P의 조건
+        {
+            b = b + 1; // 같지않게
+        }
+
+        if (a <= 10 && b <= 10)
+        {
+            if (a < b)
+            {
+                if (comparsionforDS(a) != 0)
+                    addFirst(&nheadSP[a], a, b);
+                else
+                {
+                    switch (miniDS(a))
+                    {
+                    case 0: // 대기인 상태가 없다
+
+                        addFirst(&nheadSP[a], a, b);
+                        break;
+                    case 1:
+                        D1.state break;
+                    case 2:
+                        //D2
+                        break;
+                    case 3:
+                        //A1
+                        break;
+                    case 4:
+                        //A2
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                if (comparsionforDS(a) != 0)
+                    addFirst(&nheadSM[a], a, b);
+                else
+                {
+                    switch (miniDS(a))
+                    {
+                    case 0: // 대기인 상태가 없다
+
+                        addFirst(&nheadSM[a], a, b);
+                        break;
+                    case 1:
+                        D1.state break;
+                    case 2:
+                        //D2
+                        break;
+                    case 3:
+                        //A1
+                        break;
+                    case 4:
+                        //A2
+                        break;
+                    }
+                }
+            }
+
+            if (comparsionforDS(a) != 0)
+            {
+                if (a < b)
+                    addFirst(&nheadSP[a], a, b);
+                else
+                    addFirst(&nheadSM[a], a, b);
+            }
+            else
+            {
+                switch (miniDS(a))
+                {
+                case 0: // 대기인 상태가 없다
+                    if (a < b)
+                        addFirst(&nheadSP[a], a, b);
+                    else
+                        addFirst(&nheadSM[a], a, b);
+                    break;
+                case 1:
+                    D1.state break;
+                case 2:
+                    //D2
+                    break;
+                case 3:
+                    //A1
+                    break;
+                case 4:
+                    //A2
+                    break;
+                }
+            }
+        }
+
+        else if (a >= 10 && b >= 10)
+        {
+            if (comparsionforUS(a) != 0)
+            {
+                if (a < b)
+                    addFirst(&nheadSP[a], a, b);
+                else
+                    addFirst(&nheadSM[a], a, b);
+            }
+            else
+            {
+                switch (miniUS(a))
+                {
+                case 0: // 대기인 상태가 없다
+                    if (a < b)
+                        addFirst(&nheadSP[a], a, b);
+                    else
+                        addFirst(&nheadSM[a], a, b);
+                    break;
+                case 1:
+                    //U1
+                    break;
+                case 2:
+                    //U2
+                    break;
+                case 3:
+                    //A1
+                    break;
+                case 4:
+                    //A2
+                    break;
+                }
+            }
+        }
+
+        else
+        {
+            if (comparsionforA(a) != 0)
+                addFirst(&nheadW[a], a, b);
+            else
+            {
+                int ans = miniA(a);
+                if (ans == 0)
+                    addFirst(&nheadW[a], a, b);
+                else if (ans == 1)
+                    //A1
+                    else
+                //A2
+            }
+        }
+
+        Sleep(100);
+    }
+}
+
+if (comparsionforDS(a) != 0)
+            {
+                if (a < b)
+                    addFirst(&nheadSP[a], a, b);
+                else
+                    addFirst(&nheadSM[a], a, b);
+            }
+            else
+            {
+                switch (miniDS(a))
+                {
+                case 0: // 대기인 상태가 없다
+                    if (a < b)
+                        addFirst(&nheadSP[a], a, b);
+                    else
+                        addFirst(&nheadSM[a], a, b);
+                    break;
+                case 1:
+                    D1.state break;
+                case 2:
+                    //D2
+                    break;
+                case 3:
+                    //A1
+                    break;
+                case 4:
+                    //A2
+                    break;
+                }
+            }
+        }
+
+
