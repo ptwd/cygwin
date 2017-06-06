@@ -5,11 +5,28 @@
 #include <pthread.h>
 #include <windows.h>
 
-pthread_t making;
-pthread_t printing;
 pthread_t el;
 pthread_t fo;
 pthread_t printel;
+
+pthread_mutex_t mutex_lock = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t thread_cond = PTHREAD_COND_INITIALIZER;
+
+pthread_mutex_t figure_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t figure_cond = PTHREAD_COND_INITIALIZER;
+
+pthread_mutex_t ele_mutex1 = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t ele_cond1 = PTHREAD_COND_INITIALIZER;
+pthread_mutex_t ele_mutex2 = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t ele_cond2 = PTHREAD_COND_INITIALIZER;
+pthread_mutex_t ele_mutex3 = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t ele_cond3 = PTHREAD_COND_INITIALIZER;
+pthread_mutex_t ele_mutex4 = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t ele_cond4 = PTHREAD_COND_INITIALIZER;
+pthread_mutex_t ele_mutex5 = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t ele_cond5 = PTHREAD_COND_INITIALIZER;
+pthread_mutex_t ele_mutex6 = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t ele_cond6 = PTHREAD_COND_INITIALIZER;
 
 typedef struct elevator
 {
@@ -40,7 +57,8 @@ NODE nheadSP[21]; // 전층용을 사용하지 않아도 되는 입력을 저장
 NODE nheadSM[21];
 // 직관성을 높이기 위해 21개를 선언 (1층에 해당하는 것들을 [0]에 저장하지 않고 [1]에 저장하려고)
 
-int stop = 0;
+int stop = 0; //쓰레드 강제종료를 위한...ㅋㄷㅋㄷ
+int a, b = 0; //입력을 저장할 곳
 
 void addFirst(NODE *target, int st, int e);
 void removeFirst(NODE *target);
@@ -59,58 +77,67 @@ NODE *asdfasdf(int i, int b);
 NODE *simple(int i, int a);
 void *figureout(void *sth);
 void *elevatorD1(void *sth);
+void *elevatorD2(void *sth);
+void *elevatorU1(void *sth);
+void *elevatorU2(void *sth);
+void *elevatorA1(void *sth);
+void *elevatorA2(void *sth);
 void removeAllD1();
 void printbuilding();
 void printmenu();
 void gotoxy(int x, int y);
 void *printelevator(void *sth);
+void *print(void *sth);
+void print_list(NODE target);
+void marking(ELE *hi);
 
 int main(void)
 {
-
-    srand((unsigned)time(NULL));
-
-    //각 원소마다 기준이될 층을 입력
-    /*for (int i = 1; i <= 20; i++)
-    {
-        nheadSP[i].start = i;
-        nheadSM[i].start = i;
-        nheadW[i].start = i;
-    }
-    */
-    //초기화 굳이?
-
-    int sc;
+    int sc = 0;
 
     while (sc != -1)
     {
         system("clear");
+        printbuilding();
         printmenu();
         scanf("%d", &sc);
 
-        if (sc == 1)
+        if (sc == 1) // 시뮬레이션 실행
         {
-            int ag;
-            system("clear");
-            printbuilding();
-            pthread_create(&el, NULL, &elevatorD1, NULL);         //엘레베이터 쓰레드 실행 X6
-            //pthread_create(&fo, NULL, &figureout, NULL);          //입력받는 쓰레드 실행
-            pthread_create(&printel, NULL, &printelevator, NULL); //6개의 엘레베이터 상황을 찍어주는 쓰레드\
-            pthread_cancel(el);
-            
+            pthread_create(&el, NULL, &elevatorD1, NULL); //엘레베이터함수 실행
+            pthread_create(&fo, NULL, &figureout, NULL);  //입력처리함수(figure)실행
+            pthread_create(&printel, NULL, &printelevator, NULL);
+            printf("출발층과 도착층을 입력하세요 (1~20)\n");
+            while (1)
+            {
+                scanf("%d %d", &a, &b);
+                fflush(stdin);
+                gotoxy(0, 52);
+                printf("\033[J"); //입력한 숫자를 지움
 
-            scanf("%d", ag);
+                if (a >= 1 && b >= 1 && a <= 20 && b <= 20 && a != b)
+                {
+                    pthread_cond_signal(&figure_cond);
+                }
+                else if (a == -1)
+                {
+                    break; // 나가기
+                }
+                else
+                {
+                    printf("다시 입력하세요");
+                }
+            }
+            pthread_cancel(printel);
+            pthread_cancel(fo);
+            pthread_cancel(el);
         }
         if (sc == 2)
         {
-
-            //종료
+            //쓰레드들 모두 종료 (clean up handler 만들어야함)
         }
     }
-
-    stop = 1; // stop변수는 쓰레드 종료하려고 넣었음... 쓰레드에있는 while문을 while(1)로 돌리면 종료가 안되서.. 그냥 전역변수로 while문이 끝나게했음.. cancel로 종료가 안되요 ㅠㅠ
-
-    return 0;
+    return 1;
 }
 void addFirst(NODE *target, int st, int e) // target층에 저장    출발층, 도착층을 받고 노드를 만들어서 스택에 저장
 {
@@ -334,17 +361,10 @@ void *figureout(void *sth)
 {
     pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
     pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
-
-    int a, b;
-    while (!stop)
+    while (1)
     {
-        a = rand() % 20 + 1;
-        b = rand() % 19 + 1; //시작층과 도착층이 같게하지 않기위함
-        if (a <= b)
-        {
-            b = b + 1; // 같지않게
-        }
-
+        pthread_mutex_lock(&figure_mutex);
+        pthread_cond_wait(&figure_cond, &figure_mutex);
         int compa, key, UnD, WC;
         if (a <= 10 && b <= 10)
         {
@@ -376,22 +396,47 @@ void *figureout(void *sth)
 
         if (compa != 0)                    //유기적으로 동작할 엘베가 있다
             addFirst(simple(WC, a), a, b); //스택에 저장
-        else                               //유기적인 동작을 할 엘베가 없어서 대기하고있는 엘베중에서 찾는다
+
+        else //유기적인 동작을 할 엘베가 없어서 대기하고있는 엘베중에서 찾는다
         {
             if (key == 0) // 대기중인 엘베가 없는경우
                 addFirst(simple(WC, a), a, b);
             else //있는경우
             {
-                qwerqwer(key)->state = UnD;       //엘레베이터의 상태를 바꿈
-                qwerqwer(key)->ofloor = b;        //목적층을 입력의 도착층으로 바꿈
-                addFirst(asdfasdf(key, b), a, b); //엘레베이터에 저장 (목적지 층을 기준으로)
+                if (qwerqwer(key)->nfloor > a)
+                {
+                    addFirst(simple(WC, a), a, b);
+                    qwerqwer(key)->state = -1;
+                    qwerqwer(key)->ofloor = a;
+                }
+                else if (qwerqwer(key)->nfloor < a)
+                {
+                    addFirst(simple(WC, a), a, b);
+                    qwerqwer(key)->state = 1;
+                    qwerqwer(key)->ofloor = a; // 대기중인 엘베가 현재층이 다르면 먼저 그 층에 가야함
+                }                              // 움직인 그 엘레베이터에게 바로 할당할지, 아니면 스택에 그냥 보내서 확인시킬지는..
+                else
+                {
+                    addFirst(asdfasdf(key, b), a, b); //엘레베이터에 바로 저장 (목적지 층을 기준으로)
+                    qwerqwer(key)->state = UnD;
+                    qwerqwer(key)->ofloor = b;
+                }
+                switch (key)
+                {
+                case 1:
+                }
+                pthread_cond_signal(&ele_cond1);
             }
         }
-        Sleep(100);
+        pthread_mutex_unlock(&figure_mutex);
     }
 }
+void signal(int i)
+{
+    swtich
+}
 
-void *elevatorD1(void *sth) // 일단 전층용 생각
+void *elevatorD1(void *sth) // 일단 하층용 생각
 {
     pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
     pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
@@ -399,37 +444,66 @@ void *elevatorD1(void *sth) // 일단 전층용 생각
     D1.ofloor = 0;
     D1.state = 0;
     //초기상태
-
     while (1)
     {
-
-        if (D1.state != 0)
+        pthread_mutex_lock(&ele_mutex1);
+        pthread_cond_wait(&ele_cond1, &ele_mutex1);
+        while (D1.state != 0)
         {
-            while (D1.nfloor == D1.ofloor)
+            int check = 0;
+            for (int i = 0; i < get_len(&mystackD1[D1.nfloor]); i++) // 현재층 엘베 스택에서 값을 모두 내보냄
             {
+                NODE *temp = mystackD1[D1.nfloor].next;
+                printf("\033[s");
+                gotoxy(0, 44);
+                printf("출발 층이 %d 이고 도착 층이 %d인 사람이 내렸습니다", temp->start, temp->end);
+                printf("\033[u");
+                removeFirst(&mystackD1[D1.nfloor]);
+            }
 
-                for (int i = 0; i < get_len(&nheadSP[D1.nfloor]); i++)
+            if (D1.nfloor == D1.ofloor)
+            {
+                for (int i = D1.nfloor; D1.state * (i - 5 - 5 * D1.state) <= 0; i += D1.state) // 0층은 원래없음
                 {
-                    NODE *temp = popfromin(&nheadSP[D1.nfloor]);
-                    addNode(&mystackD1[temp->end], temp);
-
-                    if ((temp->end - D1.ofloor) * D1.state > 0) // 목적지를 초과하는 목적입력이 들어오면
+                    if ((D1.state == 1 && !isEmpty(&nheadSP[i])) || (D1.state == -1 && !isEmpty(&nheadSM[i])))
                     {
-                        D1.ofloor == temp->end; // 목적지를 변경함
+                        check = 1;
+                        D1.ofloor = i;
+                        break;
                     }
                 }
-                for (int i = 0; i < get_len(&mystackD1[D1.nfloor]); i++)
+                if (check == 0)
                 {
-                    NODE *temp = mystackD1[D1.nfloor].next;
-                    printf("출발 층이 %d 이고 도착 층이 %d인 사람이 내렸습니다", temp->start, temp->end);
-                    removeFirst(&mystackD1[D1.nfloor]);
+                    for (int i = D1.nfloor; D1.state * (i - 5 - 5 * D1.state) <= 0; i += D1.state) // 0층은 원래없음
+                    {
+                        if ((D1.state == 1 && !isEmpty(&nheadSP[i])) || (D1.state == -1 && !isEmpty(&nheadSM[i])))
+                        {
+                            check = 1;
+                            D1.ofloor = i;
+                            break;
+                        }
+                    }
+                    D1.state = 0; // 대기상태로 만든다
+                    break;
                 }
-                //현재층에 해당하는 입력들을 (목적지가 현재층인 입력들을) 모두 출력후 삭제
-                D1.nfloor += D1.state;
-                Sleep(1000);
+                check = 0;
             }
-            D1.state == 0;
+            for (int i = 0; i < get_len(&nheadSP[D1.nfloor]); i++) // 현재층 스택에서 값을 모두 불러온다
+            {
+
+                NODE *temp = popfromin(&nheadSP[D1.nfloor]);
+                addNode(&mystackD1[temp->end], temp);
+
+                if ((temp->end - D1.ofloor) * D1.state > 0) // 목적지를 초과하는 목적입력이 들어오면
+                {
+                    D1.ofloor = temp->end; // 목적지를 변경함
+                }
+            }
+            fflush(stdout);
+            Sleep(1000);
+            D1.nfloor = D1.nfloor + D1.state; // ++or --
         }
+        pthread_mutex_unlock(&ele_mutex1);
     }
 }
 
@@ -490,12 +564,11 @@ void printbuilding()
 ├─────────┤├─────────┤                      ├─────────┤├─────────┤\n\
 │         ││         │                      │         ││         │  1\n\
 └─────────┘└─────────┘                      └─────────┘└─────────┘\n");
+    //왼쪽모서리의 좌표 (4,40) 가로길이 11 세로길이 2
 }
-
-//왼쪽모서리의 좌표 (4,40) 가로길이 11 세로길이 2
-
 void printmenu()
 {
+    printf("로그를 위한 공간\n\n");
     puts("======= M E N U ========");
     puts("1. 시뮬레이션 실행");
     puts("2. 시뮬레이션 정지");
@@ -508,20 +581,75 @@ void gotoxy(int x, int y)
     printf("\033[%d;%df", y, x);
     fflush(stdout);
 }
+void marking(ELE *hi)
+{
+    if (hi->state == 0)
+        printf("%d -", hi->nfloor);
+    if (hi->state == -1)
+    {
+        printf("%d ▼", hi->nfloor);
+    }
+
+    if (hi->state == 1)
+    {
+        printf("%d ▲", hi->nfloor);
+    }
+}
 
 void *printelevator(void *sth)
 {
-    gotoxy(4, 42 - 2 * D1.nfloor);
-    printf("here");
-    gotoxy(15, 42 - 2 * D2.nfloor);
-    printf("here");
-    gotoxy(26, 42 - 2 * U1.nfloor);
-    printf("here");
-    gotoxy(37, 42 - 2 * U2.nfloor);
-    printf("here");
-    gotoxy(48, 42 - 2 * A1.nfloor);
-    printf("here");
-    gotoxy(59, 42 - 2 * A2.nfloor);
-    printf("here");
-    fflush(stdout);
+    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+    pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
+
+    while (1)
+    {
+        printf("\033[s");
+        gotoxy(0, 0);
+        printbuilding();
+        gotoxy(4, 42 - 2 * D1.nfloor);
+        marking(&D1);
+        gotoxy(15, 42 - 2 * D2.nfloor);
+        marking(&D2);
+        gotoxy(26, 42 - 2 * U1.nfloor);
+        marking(&U1);
+        gotoxy(37, 42 - 2 * U2.nfloor);
+        marking(&U2);
+        gotoxy(48, 42 - 2 * A1.nfloor);
+        marking(&A1);
+        gotoxy(59, 42 - 2 * A2.nfloor);
+        marking(&A2);
+        printf("\033[u");
+        fflush(stdout);
+        Sleep(100);
+    }
+}
+
+//나중에 삭제할 것들
+
+void print_list(NODE target)
+{
+    NODE *newNode;
+    newNode = target.next;
+
+    while (newNode)
+    {
+        printf("%d ", newNode->end);
+        newNode = newNode->next;
+    }
+}
+
+void *print(void *sth)
+{
+    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+    pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
+    while (!stop)
+    {
+        for (int i = 1; i < 21; i++)
+        {
+            print_list(nheadSP[i]);
+            print_list(nheadSM[i]);
+            print_list(nheadW[i]);
+        }
+        Sleep(100);
+    }
 }
