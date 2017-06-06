@@ -1,34 +1,3 @@
-./a
-gcc qwe.c
-./a
-gcc qwe.c
-./a
-gcc qwe.c
-./a
-gcc qwe.c
-./a
-gcc qwe.c
-./a
-gcc qwe.c
-./a
-gcc qwe.c
-./a
-gcc qwe.c
-./a
-gcc qwe.c
-./a
-gcc qwe.c
-./a
-gcc qwe.c
-./a
-gcc qwe.c
-./a
-gcc qwe.c
-./a
-gcc qwe.c
-./a
-gcc qwe.c
-./a
 gcc qwe.c
 ./a
 gcc qwe.c
@@ -497,4 +466,35 @@ gcc qwe,c
 gcc qwe.c 
 ./a
 gcc qwe.c
+./a
+gcc qwe.xc
+gcc wqe.c
+gcc qwe.c
+./a
+gcc qwe.c
+gcc qwe.c
+gcc qwe.c
+gcc qwe.c
+gcc qwe.c
+./a
+./a
+gcc qwe.c
+./a
+gcc qwe.c
+gcc qwe.c
+./a
+./a
+./a
+gcc qwe.c
+gcc qwe.c
+./a
+gcc qwe,c
+gcc qwe.c
+./a
+gcc qwe.c
+./a
+gcc qwe.c
+./a
+1
+./a
 ./a
