@@ -14,9 +14,6 @@ pthread_t el6;
 pthread_t fo;
 pthread_t printel;
 
-pthread_mutex_t mutex_lock = PTHREAD_MUTEX_INITIALIZER;
-pthread_cond_t thread_cond = PTHREAD_COND_INITIALIZER;
-
 pthread_mutex_t figure_mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t figure_cond = PTHREAD_COND_INITIALIZER;
 
@@ -32,6 +29,9 @@ pthread_mutex_t ele_mutex5 = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t ele_cond5 = PTHREAD_COND_INITIALIZER;
 pthread_mutex_t ele_mutex6 = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t ele_cond6 = PTHREAD_COND_INITIALIZER;
+
+pthread_mutex_t print_mutex1 = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t print_mutex2 = PTHREAD_MUTEX_INITIALIZER;
 
 typedef struct elevator
 {
@@ -94,12 +94,14 @@ void gotoxy(int x, int y);
 void *printelevator(void *sth);
 void marking(ELE *hi);
 void sig(int key);
+void printclear(ELE *hi);
+void printfunc();
 
 int main(void)
 {
     int sc = 0;
 
-    while (sc != -1)
+    while (sc != 2)
     {
         system("clear");
         printbuilding();
@@ -116,42 +118,119 @@ int main(void)
             pthread_create(&el6, NULL, &elevatorA2, NULL); //엘레베이터함수 실행
             pthread_create(&fo, NULL, &figureout, NULL);   //입력처리함수(figure)실행
             pthread_create(&printel, NULL, &printelevator, NULL);
-            printf("출발층과 도착층을 입력하세요 (1~20)\n");
+            fflush(stdout);
+            Sleep(200);
+
             while (1)
             {
-                scanf("%d %d", &a, &b);
-                fflush(stdin);
-                gotoxy(0, 52);
+                int fun = 0;
+                gotoxy(0, 48);
                 printf("\033[J"); //입력한 숫자를 지움
+                printfunc();
+                scanf("%d", &fun);
+                if (fun == 1)
+                {
+                    printf("출발층과 도착층을 입력하세요 (나가기 -1+아무 숫자)\n");
+                    while (1)
+                    {
+                        scanf("%d %d", &a, &b);
+                        fflush(stdin);
+                        gotoxy(0, 56);
+                        printf("\033[J"); //입력한 숫자를 지움
 
-                if (a >= 1 && b >= 1 && a <= 20 && b <= 20 && a != b)
-                {
-                    pthread_cond_signal(&figure_cond);
+                        if (a >= 1 && b >= 1 && a <= 20 && b <= 20 && a != b)
+                        {
+                            printf("\033[s");
+                            gotoxy(0, 44);
+                            printf("\033[2K");
+                            printf("%d층에서 %d층으로의 요청", a, b);
+                            printf("\033[u");
+                            fflush(stdout);
+
+                            pthread_cond_signal(&figure_cond);
+                        }
+                        else if (a == -1)
+                        {
+                            break; // 나가기
+                        }
+                        else
+                        {
+                            printf("다시 입력하세요");
+                        }
+                    }
                 }
-                else if (a == -1)
+
+                if (fun == 2)
                 {
-                    break; // 나가기
+                    int fix = 0;
+                    printf("\033[s");
+                    gotoxy(0, 0);
+                    printbuilding();
+                    printf("\033[u");
+                    fflush(stdout);
+                    printf("고치려는 엘리베이터를 입력하세요 (나가기 -1)\n");
+                    while (1)
+                    {
+                        scanf("%d", &fix);
+                        fflush(stdin);
+                        gotoxy(0, 56);
+                        printf("\033[J"); //입력한 숫자를 지움
+
+                        if (fix >= 1 && fix <= 6)
+                        {
+                            if (qwerqwer(fix)->state == 2)
+                            {
+                                printf("고치는 중");
+                                fflush(stdout);
+                                Sleep(750);
+                                printf(".");
+                                fflush(stdout);
+                                Sleep(750);
+                                printf(".");
+                                fflush(stdout);
+                                Sleep(750);
+                                printf(".");
+                                fflush(stdout);
+                                Sleep(750);
+
+                                qwerqwer(fix)->state = 0;
+                                qwerqwer(fix)->nfloor = 1;
+                                gotoxy(0, 56);
+                                printf("\033[J");
+                            }
+                            else
+                                printf("고장나지 않았습니다");
+                        }
+                        if (fix == -1)
+                            break;
+                    }
                 }
-                else
+                if (fun == 3)
                 {
-                    printf("다시 입력하세요");
+                    break;
                 }
             }
-            pthread_cancel(printel);
-            pthread_cancel(fo);
-            pthread_cancel(el6);
-            pthread_cancel(el5);
-            pthread_cancel(el4);
-            pthread_cancel(el3);
-            pthread_cancel(el2);
-            pthread_cancel(el1);
-            //join 필요
-        }
-        if (sc == 2)
-        {
-            //쓰레드들 모두 종료 (clean up handler 만들어야함)
         }
     }
+
+    stop = 1;
+    pthread_cond_signal(&figure_cond);
+    pthread_cond_signal(&ele_cond1);
+    pthread_cond_signal(&ele_cond2);
+    pthread_cond_signal(&ele_cond3);
+    pthread_cond_signal(&ele_cond4);
+    pthread_cond_signal(&ele_cond5);
+    pthread_cond_signal(&ele_cond6);
+    pthread_join(printel, NULL);
+    pthread_join(fo, NULL);
+    pthread_join(el6, NULL);
+    pthread_join(el5, NULL);
+    pthread_join(el4, NULL);
+    pthread_join(el3, NULL);
+    pthread_join(el2, NULL);
+    pthread_join(el1, NULL);
+    //join 필요
+    stop = 0;
     return 1;
 }
 void addFirst(NODE *target, int st, int e) // target층에 저장    출발층, 도착층을 받고 노드를 만들어서 스택에 저장
@@ -376,7 +455,7 @@ void *figureout(void *sth)
 {
     pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
     pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
-    while (1)
+    while (!stop)
     {
         pthread_mutex_lock(&figure_mutex);
         pthread_cond_wait(&figure_cond, &figure_mutex);
@@ -432,6 +511,13 @@ void *figureout(void *sth)
                 }                              // 움직인 그 엘레베이터에게 바로 할당할지, 아니면 스택에 그냥 보내서 확인시킬지는..
                 else
                 {
+                    printf("\033[s");
+                    gotoxy(0, 45);
+                    printf("\033[2K");
+                    printf("엘리베이터 %d이(가) %d층에서의 요청 응답", key, a);
+                    printf("\033[u");
+                    fflush(stdout);
+
                     addFirst(asdfasdf(key, b), a, b); //엘레베이터에 바로 저장 (목적지 층을 기준으로)
                     qwerqwer(key)->state = UnD;
                     qwerqwer(key)->ofloor = b;
@@ -475,21 +561,24 @@ void *elevatorD1(void *sth) // 일단 하층용 생각
     D1.nfloor = 1;
     D1.ofloor = 0;
     D1.state = 0;
+
+    srand(time(NULL));
     //초기상태
-    while (1)
+    while (!stop)
     {
         pthread_mutex_lock(&ele_mutex1);
         pthread_cond_wait(&ele_cond1, &ele_mutex1);
-        while (D1.state != 0)
+        while (D1.state != 0 && !stop && D1.state != 2)
         {
             int check = 0;
             for (int i = 0; i < get_len(&mystackD1[D1.nfloor]); i++) // 현재층 엘베 스택에서 값을 모두 내보냄
             {
                 NODE *temp = mystackD1[D1.nfloor].next;
                 printf("\033[s");
-                gotoxy(0, 44);
+                gotoxy(0, 46);
                 printf("출발 층이 %d 이고 도착 층이 %d인 사람이 내렸습니다", temp->start, temp->end);
                 printf("\033[u");
+                fflush(stdout);
                 removeFirst(&mystackD1[D1.nfloor]);
             }
 
@@ -528,6 +617,12 @@ void *elevatorD1(void *sth) // 일단 하층용 생각
 
                 NODE *temp = popfromin(simple(D1.state, D1.nfloor));
                 addNode(&mystackD1[temp->end], temp);
+                printf("\033[s");
+                gotoxy(0, 45);
+                printf("\033[2K");
+                printf("엘리베이터 1이(가) %d층에서의 요청 응답", D1.nfloor);
+                printf("\033[u");
+                fflush(stdout);
 
                 if ((temp->end - D1.ofloor) * D1.state > 0) // 목적지를 초과하는 목적입력이 들어오면
                 {
@@ -537,6 +632,14 @@ void *elevatorD1(void *sth) // 일단 하층용 생각
             fflush(stdout);
             Sleep(1000);
             D1.nfloor = D1.nfloor + D1.state; // ++or --
+
+            if (rand() % 200 == 100)
+            {
+                D1.state = 2;    //에러상태; //
+                D1.nfloor = 100; //100층으로 고정시켜서 figrueout에서 파악하지 못하게함
+                //comparisonfor함수에서 state * (a-floor )>0이면 1이되므로 -가되게하기위함
+                D1.ofloor = 1;
+            }
         }
         pthread_mutex_unlock(&ele_mutex1);
     }
@@ -549,21 +652,24 @@ void *elevatorD2(void *sth) // 일단 하층용 생각
     D2.nfloor = 1;
     D2.ofloor = 0;
     D2.state = 0;
+
+    srand(time(NULL));
     //초기상태
-    while (1)
+    while (!stop)
     {
         pthread_mutex_lock(&ele_mutex2);
         pthread_cond_wait(&ele_cond2, &ele_mutex2);
-        while (D2.state != 0)
+        while (D2.state != 0 &&!stop &&D2.state != 2)
         {
             int check = 0;
             for (int i = 0; i < get_len(&mystackD2[D2.nfloor]); i++) // 현재층 엘베 스택에서 값을 모두 내보냄
             {
                 NODE *temp = mystackD2[D2.nfloor].next;
                 printf("\033[s");
-                gotoxy(0, 44);
+                gotoxy(0, 46);
                 printf("출발 층이 %d 이고 도착 층이 %d인 사람이 내렸습니다", temp->start, temp->end);
                 printf("\033[u");
+                fflush(stdout);
                 removeFirst(&mystackD2[D2.nfloor]);
             }
 
@@ -603,6 +709,13 @@ void *elevatorD2(void *sth) // 일단 하층용 생각
                 NODE *temp = popfromin(simple(D2.state, D2.nfloor));
                 addNode(&mystackD2[temp->end], temp);
 
+                printf("\033[s");
+                gotoxy(0, 45);
+                printf("\033[2K");
+                printf("엘리베이터 2이(가) %d층에서의 요청 응답", D2.nfloor);
+                printf("\033[u");
+                fflush(stdout);
+
                 if ((temp->end - D2.ofloor) * D2.state > 0) // 목적지를 초과하는 목적입력이 들어오면
                 {
                     D2.ofloor = temp->end; // 목적지를 변경함
@@ -611,6 +724,15 @@ void *elevatorD2(void *sth) // 일단 하층용 생각
             fflush(stdout);
             Sleep(1000);
             D2.nfloor = D2.nfloor + D2.state; // ++or --
+            
+            if (rand() % 200 == 100)
+            {
+                D2.state = 2;    //에러상태; //
+                D2.nfloor = 100; //100층으로 고정시켜서 figrueout에서 파악하지 못하게함
+                //comparisonfor함수에서 state * (a-floor )>0이면 1이되므로 -가되게하기위함
+                D2.ofloor = 1;
+            }
+            
         }
         pthread_mutex_unlock(&ele_mutex2);
     }
@@ -623,21 +745,24 @@ void *elevatorU1(void *sth) // 일단 하층용 생각
     U1.nfloor = 11;
     U1.ofloor = 0;
     U1.state = 0;
+
+    srand(time(NULL));
     //초기상태
-    while (1)
+    while (!stop)
     {
         pthread_mutex_lock(&ele_mutex3);
         pthread_cond_wait(&ele_cond3, &ele_mutex3);
-        while (U1.state != 0)
+        while (U1.state != 0 &&!stop &&U1.state != 2)
         {
             int check = 0;
             for (int i = 0; i < get_len(&mystackU1[U1.nfloor]); i++) // 현재층 엘베 스택에서 값을 모두 내보냄
             {
                 NODE *temp = mystackU1[U1.nfloor].next;
                 printf("\033[s");
-                gotoxy(0, 44);
+                gotoxy(0, 46);
                 printf("출발 층이 %d 이고 도착 층이 %d인 사람이 내렸습니다", temp->start, temp->end);
                 printf("\033[u");
+                fflush(stdout);
                 removeFirst(&mystackU1[U1.nfloor]);
             }
 
@@ -687,6 +812,12 @@ void *elevatorU1(void *sth) // 일단 하층용 생각
                 NODE *temp = popfromin(simple(U1.state, U1.nfloor));
                 addNode(&mystackU1[temp->end], temp);
 
+                printf("\033[s");
+                gotoxy(0, 45);
+                printf("\033[2K");
+                printf("엘리베이터 3이(가) %d층에서의 요청 응답", U1.nfloor);
+                printf("\033[u");
+                fflush(stdout);
                 if ((temp->end - U1.ofloor) * U1.state > 0) // 목적지를 초과하는 목적입력이 들어오면
                 {
                     U1.ofloor = temp->end; // 목적지를 변경함
@@ -695,6 +826,15 @@ void *elevatorU1(void *sth) // 일단 하층용 생각
             fflush(stdout);
             Sleep(1000);
             U1.nfloor = U1.nfloor + U1.state; // ++or --
+                                              
+            if (rand() % 200 == 100)
+            {
+                U1.state = 2;    //에러상태; //
+                U1.nfloor = 100; //100층으로 고정시켜서 figrueout에서 파악하지 못하게함
+                //comparisonfor함수에서 state * (a-floor )>0이면 1이되므로 -가되게하기위함
+                U1.ofloor = 11;
+            }
+            
         }
         pthread_mutex_unlock(&ele_mutex3);
     }
@@ -706,21 +846,24 @@ void *elevatorU2(void *sth) // 일단 하층용 생각
     U2.nfloor = 11;
     U2.ofloor = 0;
     U2.state = 0;
+
+    srand(time(NULL));
     //초기상태
-    while (1)
+    while (!stop)
     {
         pthread_mutex_lock(&ele_mutex4);
         pthread_cond_wait(&ele_cond4, &ele_mutex4);
-        while (U2.state != 0)
+        while (U2.state != 0 &&!stop &&U2.state != 2)
         {
             int check = 0;
             for (int i = 0; i < get_len(&mystackU2[U2.nfloor]); i++) // 현재층 엘베 스택에서 값을 모두 내보냄
             {
                 NODE *temp = mystackU2[U2.nfloor].next;
                 printf("\033[s");
-                gotoxy(0, 44);
+                gotoxy(0, 46);
                 printf("출발 층이 %d 이고 도착 층이 %d인 사람이 내렸습니다", temp->start, temp->end);
                 printf("\033[u");
+                fflush(stdout);
                 removeFirst(&mystackU2[U2.nfloor]);
             }
 
@@ -770,6 +913,12 @@ void *elevatorU2(void *sth) // 일단 하층용 생각
                 NODE *temp = popfromin(simple(U2.state, U2.nfloor));
                 addNode(&mystackU2[temp->end], temp);
 
+                printf("\033[s");
+                gotoxy(0, 45);
+                printf("\033[2K");
+                printf("엘리베이터 4이(가) %d층에서의 요청 응답", U2.nfloor);
+                printf("\033[u");
+                fflush(stdout);
                 if ((temp->end - U2.ofloor) * U2.state > 0) // 목적지를 초과하는 목적입력이 들어오면
                 {
                     U2.ofloor = temp->end; // 목적지를 변경함
@@ -778,6 +927,15 @@ void *elevatorU2(void *sth) // 일단 하층용 생각
             fflush(stdout);
             Sleep(1000);
             U2.nfloor = U2.nfloor + U2.state; // ++or --
+                                              
+            if (rand() % 200 == 100)
+            {
+                U2.state = 2;    //에러상태; //
+                U2.nfloor = 100; //100층으로 고정시켜서 figrueout에서 파악하지 못하게함
+                //comparisonfor함수에서 state * (a-floor )>0이면 1이되므로 -가되게하기위함
+                U2.ofloor = 11;
+            }
+            
         }
         pthread_mutex_unlock(&ele_mutex4);
     }
@@ -790,27 +948,30 @@ void *elevatorA1(void *sth) // 일단 하층용 생각
     A1.nfloor = 1;
     A1.ofloor = 0;
     A1.state = 0;
+
+    srand(time(NULL));
     //초기상태
-    while (1)
+    while (!stop)
     {
         pthread_mutex_lock(&ele_mutex5);
         pthread_cond_wait(&ele_cond5, &ele_mutex5);
-        while (A1.state != 0)
+        while (A1.state != 0 &&!stop &&A1.state != 2)
         {
             int check = 0;
             for (int i = 0; i < get_len(&mystackA1[A1.nfloor]); i++) // 현재층 엘베 스택에서 값을 모두 내보냄
             {
                 NODE *temp = mystackA1[A1.nfloor].next;
                 printf("\033[s");
-                gotoxy(0, 44);
+                gotoxy(0, 46);
                 printf("출발 층이 %d 이고 도착 층이 %d인 사람이 내렸습니다", temp->start, temp->end);
                 printf("\033[u");
+                fflush(stdout);
                 removeFirst(&mystackA1[A1.nfloor]);
             }
 
             if (A1.nfloor == A1.ofloor)
             {
-                for (int i = A1.nfloor; A1.state * (i - 10 - 10 * A1.state) <= 0; i += A1.state) // 0층은 원래없음
+                for (int i = A1.nfloor; A1.state * (i - 10 - 10 * A1.state) <= -1; i += A1.state) // 0층은 원래없음
                 {
                     if ((A1.state == 1 && !isEmpty(&nheadSP[i])) || (A1.state == -1 && !isEmpty(&nheadSM[i])) || !isEmpty(&nheadW[i]))
                     {
@@ -821,7 +982,7 @@ void *elevatorA1(void *sth) // 일단 하층용 생각
                 }
                 if (check == 0)
                 {
-                    for (int i = A1.nfloor; A1.state * (i - 10 + 10 * A1.state) >= 0; i -= A1.state) // 0층은 원래없음
+                    for (int i = A1.nfloor; A1.state * (i - 10 + 10 * A1.state) >= 1; i -= A1.state) // 0층은 원래없음
                     {
                         if ((A1.state == 1 && !isEmpty(&nheadSM[i])) || (A1.state == -1 && !isEmpty(&nheadSP[i])) || !isEmpty(&nheadW[i]))
                         {
@@ -855,6 +1016,12 @@ void *elevatorA1(void *sth) // 일단 하층용 생각
                 NODE *temp = popfromin(simple(A1.state, A1.nfloor));
                 addNode(&mystackA1[temp->end], temp);
 
+                printf("\033[s");
+                gotoxy(0, 45);
+                printf("\033[2K");
+                printf("엘리베이터 5이(가) %d층에서의 요청 응답", A1.nfloor);
+                printf("\033[u");
+                fflush(stdout);
                 if ((temp->end - A1.ofloor) * A1.state > 0) // 목적지를 초과하는 목적입력이 들어오면
                 {
                     A1.ofloor = temp->end; // 목적지를 변경함
@@ -863,6 +1030,14 @@ void *elevatorA1(void *sth) // 일단 하층용 생각
             fflush(stdout);
             Sleep(1000);
             A1.nfloor = A1.nfloor + A1.state; // ++or --
+
+            if (rand() % 200 == 100)
+            {
+                A1.state = 2;    //에러상태; //
+                A1.nfloor = 100; //100층으로 고정시켜서 figrueout에서 파악하지 못하게함
+                //comparisonfor함수에서 state * (a-floor )>0이면 1이되므로 -가되게하기위함
+                A1.ofloor = 1;
+            }
         }
         pthread_mutex_unlock(&ele_mutex5);
     }
@@ -874,27 +1049,30 @@ void *elevatorA2(void *sth) // 일단 하층용 생각
     A2.nfloor = 1;
     A2.ofloor = 0;
     A2.state = 0;
+
+    srand(time(NULL));
     //초기상태
-    while (1)
+    while (!stop)
     {
         pthread_mutex_lock(&ele_mutex6);
         pthread_cond_wait(&ele_cond6, &ele_mutex6);
-        while (A2.state != 0)
+        while (A2.state != 0 &&!stop &&A2.state != 2)
         {
             int check = 0;
             for (int i = 0; i < get_len(&mystackA2[A2.nfloor]); i++) // 현재층 엘베 스택에서 값을 모두 내보냄
             {
                 NODE *temp = mystackA2[A2.nfloor].next;
                 printf("\033[s");
-                gotoxy(0, 44);
+                gotoxy(0, 46);
                 printf("출발 층이 %d 이고 도착 층이 %d인 사람이 내렸습니다", temp->start, temp->end);
                 printf("\033[u");
+                fflush(stdout);
                 removeFirst(&mystackA2[A2.nfloor]);
             }
 
             if (A2.nfloor == A2.ofloor)
             {
-                for (int i = A2.nfloor; A2.state * (i - 10 - 10 * A2.state) <= 0; i += A2.state) // 0층은 원래없음
+                for (int i = A2.nfloor; A2.state * (i - 10 - 10 * A2.state) <= -1; i += A2.state) // 0층은 원래없음
                 {
                     if ((A2.state == 1 && !isEmpty(&nheadSP[i])) || (A2.state == -1 && !isEmpty(&nheadSM[i])) || !isEmpty(&nheadW[i]))
                     {
@@ -905,7 +1083,7 @@ void *elevatorA2(void *sth) // 일단 하층용 생각
                 }
                 if (check == 0)
                 {
-                    for (int i = A2.nfloor; A2.state * (i - 10 + 10 * A2.state) >= 0; i -= A2.state) // 0층은 원래없음
+                    for (int i = A2.nfloor; A2.state * (i - 10 + 10 * A2.state) >= 1; i -= A2.state) // 0층은 원래없음
                     {
                         if ((A2.state == 1 && !isEmpty(&nheadSM[i])) || (A2.state == -1 && !isEmpty(&nheadSP[i])) || !isEmpty(&nheadW[i]))
                         {
@@ -927,6 +1105,12 @@ void *elevatorA2(void *sth) // 일단 하층용 생각
 
                 NODE *temp = popfromin(simple(0, A2.nfloor));
                 addNode(&mystackA2[temp->end], temp);
+                printf("\033[s");
+                gotoxy(0, 45);
+                printf("\033[2K");
+                printf("엘리베이터 5이(가) %d층에서의 요청 응답", A2.nfloor);
+                printf("\033[u");
+                fflush(stdout);
 
                 if ((temp->end - A2.ofloor) * A2.state > 0) // 목적지를 초과하는 목적입력이 들어오면
                 {
@@ -947,6 +1131,14 @@ void *elevatorA2(void *sth) // 일단 하층용 생각
             fflush(stdout);
             Sleep(1000);
             A2.nfloor = A2.nfloor + A2.state; // ++or --
+
+            if (rand() % 200 == 100)
+            {
+                A2.state = 2;    //에러상태; //
+                A2.nfloor = 100; //100층으로 고정시켜서 figrueout에서 파악하지 못하게함
+                //comparisonfor함수에서 state * (a-floor )>0이면 1이되므로 -가되게하기위함
+                A2.ofloor = 1;
+            }
         }
         pthread_mutex_unlock(&ele_mutex6);
     }
@@ -967,6 +1159,7 @@ void removeAllD1() // 쓰레드를 중단시킬때 실행해야될듯
 
 void printbuilding()
 {
+    pthread_mutex_lock(&print_mutex1);
     puts("\
                       ┌─────────┐┌─────────┐┌─────────┐┌─────────┐\n\
                       │         ││         ││         ││         │  20\n\
@@ -1010,15 +1203,30 @@ void printbuilding()
 │         ││         │                      │         ││         │  1\n\
 └─────────┘└─────────┘                      └─────────┘└─────────┘\n");
     //왼쪽모서리의 좌표 (4,40) 가로길이 11 세로길이 2
+     pthread_mutex_unlock(&print_mutex1);
 }
 void printmenu()
 {
-    printf("로그를 위한 공간\n\n");
+    pthread_mutex_lock(&print_mutex1);
+    puts("----log----\n\n\n\n");
     puts("======= M E N U ========");
     puts("1. 시뮬레이션 실행");
-    puts("2. 시뮬레이션 정지");
+    puts("2. 프로그램 종료");
     puts("========================");
-    puts("메뉴 선택(종료 -1): ");
+    puts("메뉴 선택: ");
+    pthread_mutex_unlock(&print_mutex1);
+}
+
+void printfunc()
+{
+    pthread_mutex_lock(&print_mutex1);
+    puts("======= M E N U ========");
+    puts("1. 입력하기");
+    puts("2. 엘리베이터 고치기");
+    puts("3. 시뮬레이션 나가기");
+    puts("========================");
+    puts("기능 선택: ");
+    pthread_mutex_unlock(&print_mutex1);
 }
 
 void gotoxy(int x, int y)
@@ -1046,25 +1254,72 @@ void *printelevator(void *sth)
     pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
     pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
 
-    while (1)
+    while (!stop)
     {
         printf("\033[s");
-        gotoxy(0, 0);
-        printbuilding();
-        gotoxy(4, 42 - 2 * D1.nfloor);
-        marking(&D1);
-        gotoxy(15, 42 - 2 * D2.nfloor);
-        marking(&D2);
-        gotoxy(26, 42 - 2 * U1.nfloor);
-        marking(&U1);
-        gotoxy(37, 42 - 2 * U2.nfloor);
-        marking(&U2);
-        gotoxy(48, 42 - 2 * A1.nfloor);
-        marking(&A1);
-        gotoxy(59, 42 - 2 * A2.nfloor);
-        marking(&A2);
+        printclear(&D1);
+        printclear(&D2);
+        printclear(&U1);
+        printclear(&U2);
+        printclear(&A1);
+        printclear(&A2);
         printf("\033[u");
         fflush(stdout);
         Sleep(100);
+    }
+}
+
+void printclear(ELE *hi)
+{
+    int k = 0;
+    if (hi == &D1)
+        k = 0;
+    if (hi == &D2)
+        k = 1;
+
+    if (hi == &U1)
+        k = 2;
+
+    if (hi == &U2)
+        k = 3;
+
+    if (hi == &A1)
+        k = 4;
+
+    if (hi == &A2)
+        k = 5;
+
+    if (hi->state == 2)
+    {
+        gotoxy(4 + 11 * k, 40);
+        printf("\033[31;40mERROR");
+        printf("\033[0m");
+    }
+    else
+    {
+        if (hi->nfloor == 20)
+        {
+
+            gotoxy(4 + 11 * k, 42 - 2 * hi->nfloor + 2);
+            printf("      ");
+        }
+        else if (hi->nfloor == 1)
+        {
+            gotoxy(4 + 11 * k, 42 - 2 * hi->nfloor - 2);
+            printf("      ");
+        }
+        else
+        {
+            gotoxy(4 + 11 * k, 42 - 2 * hi->nfloor - 2);
+            printf("      ");
+
+            gotoxy(4 + 11 * k, 42 - 2 * hi->nfloor + 2);
+            printf("      ");
+        }
+        gotoxy(4 + 11 * k, 42 - 2 * hi->nfloor);
+        printf("      ");
+
+        gotoxy(4 + 11 * k, 42 - 2 * hi->nfloor);
+        marking(hi);
     }
 }
