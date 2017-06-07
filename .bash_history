@@ -1,51 +1,3 @@
-gcc qwe.c
-./a
-gcc qwe.c
-./a
-gcc qwe.c
-./a
-2
-1
-2
-3
-12421
-4
-12421
-gcc qwe.c
-./a
-gcc qwe.c
-./a
-sdfa
-gcc qwe.c
-./a
-gcc qwe.c
-./a
-gcc qwe.c
-./a
-gcc qwe.c
-gcc qwe.c
-./a
-gcc qwe.c
-./a
-./a
-gcc qwe.c
-./a
-gcc qwe.c
-./a
-gcc qwe.c
-./a
-gcc qwe.c
-./a
-gcc qwe.c
-./a
-./a
-gcc qwe.c
-./a
-gcc qwe.c
-./a
-gcc qwe.c
-./a
-gcc qwe.c
 ./a
 gcc qwe.c
 ./a
@@ -497,4 +449,52 @@ gcc qwe.c
 ./a
 1
 ./a
+./a
+gcc qwe.c
+./a
+./a
+./a
+gcc qwe.c
+gcc qwe.c
+./a
+gcc qwe.c
+./a
+gcc qwe.c
+./a
+gcc qwe.c
+gcc qwe.c
+./a
+gcc qwe.c
+./a
+./a
+gcc qwe.c
+./a
+gcc qwe.c
+./a
+gcc qwe.c
+./a
+gcc qwe.c
+./a
+./a
+gcc qwe.c
+./a
+./a
+./a
+./a
+gcc qwe.c
+./a
+gcc qwe.c
+./a
+gcc qwe.c
+./a
+gcc qwe.c
+./a
+gcc qwe.c
+./a
+gcc qwe.c
+./a
+gcc qwe,c
+gcc qwe.c
+./a
+gcc qwe.c
 ./a

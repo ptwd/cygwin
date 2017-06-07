@@ -49,10 +49,10 @@ typedef struct node //입력으로 생성될 노드
     struct node *next; // 아직 typedef되지 않았으므로 NODE*라고 쓰지 못함
 } NODE;
 
-NODE mystackD1[11];
-NODE mystackD2[11];
-NODE mystackU1[11];
-NODE mystackU2[11];
+NODE mystackD1[21];
+NODE mystackD2[21];
+NODE mystackU1[21];
+NODE mystackU2[21];
 NODE mystackA1[21];
 NODE mystackA2[21];
 
@@ -92,8 +92,6 @@ void printbuilding();
 void printmenu();
 void gotoxy(int x, int y);
 void *printelevator(void *sth);
-void *print(void *sth);
-void print_list(NODE target);
 void marking(ELE *hi);
 void sig(int key);
 
@@ -279,14 +277,14 @@ int miniUS(int a)
     int temp = 100;
     if (U1.state == 0)
     {
-        temp = abs(a - D1.nfloor);
+        temp = abs(a - U1.nfloor);
         who = 3;
     }
     if (U2.state == 0)
     {
-        if (temp > abs(a - D2.nfloor))
+        if (temp > abs(a - U2.nfloor))
         {
-            temp = abs(a - D2.nfloor);
+            temp = abs(a - U2.nfloor);
             who = 4;
         }
     }
@@ -313,12 +311,12 @@ int miniA(int a)
     int temp = 100;
     if (A1.state == 0)
     {
-        temp = abs(a - D1.nfloor);
+        temp = abs(a - A1.nfloor);
         who = 5;
     }
     if (A2.state == 0)
     {
-        if (temp > abs(a - D2.nfloor))
+        if (temp > abs(a - A2.nfloor))
         {
             who = 6;
         }
@@ -383,22 +381,6 @@ void *figureout(void *sth)
         pthread_mutex_lock(&figure_mutex);
         pthread_cond_wait(&figure_cond, &figure_mutex);
         int compa, key, UnD, WC;
-        if (a <= 10 && b <= 10)
-        {
-            compa = comparisonforDS(a);
-            key = miniDS(a);
-        }
-        else if (a >= 10 && b >= 10)
-        {
-            compa = comparisonforUS(a);
-            key = miniUS(a);
-        }
-        else
-        {
-            compa = comparisonforA(a);
-            key = miniA(a);
-            WC = 0; //전층용
-        }
 
         if (a < b)
         {
@@ -409,6 +391,22 @@ void *figureout(void *sth)
         {
             UnD = -1;
             WC = -1;
+        }
+        if (a <= 10 && b <= 10)
+        {
+            compa = comparisonforDS(a);
+            key = miniDS(a);
+        }
+        else if (a >= 11 && b >= 11)
+        {
+            compa = comparisonforUS(a);
+            key = miniUS(a);
+        }
+        else
+        {
+            compa = comparisonforA(a);
+            key = miniA(a);
+            WC = 0; //전층용
         }
 
         if (compa != 0)                    //유기적으로 동작할 엘베가 있다
@@ -497,7 +495,7 @@ void *elevatorD1(void *sth) // 일단 하층용 생각
 
             if (D1.nfloor == D1.ofloor)
             {
-                for (int i = D1.nfloor; D1.state * (i - 5 - 5 * D1.state) <= 0; i += D1.state) // 0층은 원래없음
+                for (int i = D1.nfloor; D1.state * (i - 5 - 5 * D1.state) <= -1; i += D1.state) // 0층은 원래없음
                 {
                     if ((D1.state == 1 && !isEmpty(&nheadSP[i])) || (D1.state == -1 && !isEmpty(&nheadSM[i])))
                     {
@@ -508,10 +506,22 @@ void *elevatorD1(void *sth) // 일단 하층용 생각
                 }
                 if (check == 0)
                 {
+                    for (int i = D1.nfloor; D1.state * (i - 5 + 5 * D1.state) >= -1; i -= D1.state) // 0층은 원래없음
+                    {
+                        if ((D1.state == 1 && !isEmpty(&nheadSM[i])) || (D1.state == -1 && !isEmpty(&nheadSP[i])))
+                        {
+                            check = 1;
+                            D1.state = (-1) * D1.state;
+                            D1.ofloor = i;
+                            break;
+                        }
+                    }
+                }
+                if (check == 0)
+                {
                     D1.state = 0; // 대기상태로 만든다
                     break;
                 }
-                check = 0;
             }
             for (int i = 0; i < get_len(simple(D1.state, D1.nfloor)); i++) // 현재층 스택에서 값을 모두 불러온다
             {
@@ -570,10 +580,22 @@ void *elevatorD2(void *sth) // 일단 하층용 생각
                 }
                 if (check == 0)
                 {
+                    for (int i = D2.nfloor; D2.state * (i - 5 + 5 * D2.state) >= 0; i -= D2.state) // 0층은 원래없음
+                    {
+                        if ((D2.state == 1 && !isEmpty(&nheadSM[i])) || (D2.state == -1 && !isEmpty(&nheadSP[i])))
+                        {
+                            check = 1;
+                            D2.state = (-1) * D2.state;
+                            D2.ofloor = i;
+                            break;
+                        }
+                    }
+                }
+                if (check == 0)
+                {
                     D2.state = 0; // 대기상태로 만든다
                     break;
                 }
-                check = 0;
             }
             for (int i = 0; i < get_len(simple(D2.state, D2.nfloor)); i++) // 현재층 스택에서 값을 모두 불러온다
             {
@@ -637,10 +659,27 @@ void *elevatorU1(void *sth) // 일단 하층용 생각
                 }
                 if (check == 0)
                 {
+                    if (U1.state == 1)
+                        aaf = 11;
+                    else
+                        aaf = 20;
+                    for (int i = U1.nfloor; U1.state * (i - aaf) >= 0; i -= U1.state) // 0층은 원래없음
+                    {
+                        if ((U1.state == 1 && !isEmpty(&nheadSM[i])) || (U1.state == -1 && !isEmpty(&nheadSP[i])))
+                        {
+                            check = 1;
+                            U1.state = (-1) * U1.state;
+                            U1.ofloor = i;
+                            break;
+                        }
+                    }
+                }
+
+                if (check == 0)
+                {
                     U1.state = 0; // 대기상태로 만든다
                     break;
                 }
-                check = 0;
             }
             for (int i = 0; i < get_len(simple(U1.state, U1.nfloor)); i++) // 현재층 스택에서 값을 모두 불러온다
             {
@@ -703,10 +742,27 @@ void *elevatorU2(void *sth) // 일단 하층용 생각
                 }
                 if (check == 0)
                 {
+                    if (U1.state == 1)
+                        aaf = 11;
+                    else
+                        aaf = 20;
+                    for (int i = U2.nfloor; U2.state * (i - aaf) >= 0; i -= U2.state) // 0층은 원래없음
+                    {
+                        if ((U2.state == 1 && !isEmpty(&nheadSM[i])) || (U2.state == -1 && !isEmpty(&nheadSP[i])))
+                        {
+                            check = 1;
+                            U2.state = (-1) * U2.state;
+                            U2.ofloor = i;
+                            break;
+                        }
+                    }
+                }
+
+                if (check == 0)
+                {
                     U2.state = 0; // 대기상태로 만든다
                     break;
                 }
-                check = 0;
             }
             for (int i = 0; i < get_len(simple(U2.state, U2.nfloor)); i++) // 현재층 스택에서 값을 모두 불러온다
             {
@@ -765,10 +821,22 @@ void *elevatorA1(void *sth) // 일단 하층용 생각
                 }
                 if (check == 0)
                 {
+                    for (int i = A1.nfloor; A1.state * (i - 10 + 10 * A1.state) >= 0; i -= A1.state) // 0층은 원래없음
+                    {
+                        if ((A1.state == 1 && !isEmpty(&nheadSM[i])) || (A1.state == -1 && !isEmpty(&nheadSP[i])) || !isEmpty(&nheadW[i]))
+                        {
+                            check = 1;
+                            A1.state = (-1) * A1.state;
+                            A1.ofloor = i;
+                            break;
+                        }
+                    }
+                }
+                if (check == 0)
+                {
                     A1.state = 0; // 대기상태로 만든다
                     break;
                 }
-                check = 0;
             }
             for (int i = 0; i < get_len(simple(0, A1.nfloor)); i++) // 현재층 스택에서 값을 모두 불러온다
             {
@@ -837,10 +905,22 @@ void *elevatorA2(void *sth) // 일단 하층용 생각
                 }
                 if (check == 0)
                 {
+                    for (int i = A2.nfloor; A2.state * (i - 10 + 10 * A2.state) >= 0; i -= A2.state) // 0층은 원래없음
+                    {
+                        if ((A2.state == 1 && !isEmpty(&nheadSM[i])) || (A2.state == -1 && !isEmpty(&nheadSP[i])) || !isEmpty(&nheadW[i]))
+                        {
+                            check = 1;
+                            A2.state = (-1) * A2.state;
+                            A2.ofloor = i;
+                            break;
+                        }
+                    }
+                }
+                if (check == 0)
+                {
                     A2.state = 0; // 대기상태로 만든다
                     break;
                 }
-                check = 0;
             }
             for (int i = 0; i < get_len(simple(0, A2.nfloor)); i++) // 현재층 스택에서 값을 모두 불러온다
             {
@@ -985,36 +1065,6 @@ void *printelevator(void *sth)
         marking(&A2);
         printf("\033[u");
         fflush(stdout);
-        Sleep(100);
-    }
-}
-
-//나중에 삭제할 것들
-
-void print_list(NODE target)
-{
-    NODE *newNode;
-    newNode = target.next;
-
-    while (newNode)
-    {
-        printf("%d ", newNode->end);
-        newNode = newNode->next;
-    }
-}
-
-void *print(void *sth)
-{
-    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
-    pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
-    while (!stop)
-    {
-        for (int i = 1; i < 21; i++)
-        {
-            print_list(nheadSP[i]);
-            print_list(nheadSM[i]);
-            print_list(nheadW[i]);
-        }
         Sleep(100);
     }
 }
